@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DesabaChat - Desabafa, conta um segredo, espalha a fofoca</title>
+    <!-- Font Awesome 6 (ícones gratuitos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js">
     </script>
     <style>
@@ -15,24 +17,21 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3da 100%);
-            color: #1e1e1e;
-            padding: 16px;
-            max-width: 680px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0ebe4;
+            color: #1a1a1a;
+            padding: 0;
+            max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
         }
 
         /* ===== APP CONTAINER ===== */
         .app {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-            padding: 20px 18px 30px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 16px 16px 80px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
         }
 
         /* ===== HEADER ===== */
@@ -40,240 +39,265 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #f0ede8;
-            padding-bottom: 16px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            padding: 8px 0 16px;
+            border-bottom: 1px solid #e8e3dc;
+            margin-bottom: 16px;
         }
 
         .logo {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 800;
+            color: #1a1a1a;
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #1a1a1a;
         }
 
-        .logo .emoji-big {
-            font-size: 32px;
+        .logo i {
+            color: #ff6b4a;
+            font-size: 24px;
         }
 
         .logo .beta {
-            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
+            background: #1a1a1a;
             color: white;
-            font-size: 11px;
+            font-size: 9px;
             font-weight: 700;
-            padding: 2px 12px;
-            border-radius: 40px;
+            padding: 2px 8px;
+            border-radius: 10px;
             letter-spacing: 0.5px;
         }
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
 
         .header-actions button {
-            background: #f0ede8;
+            background: none;
             border: none;
-            padding: 8px 14px;
-            border-radius: 40px;
+            padding: 6px 12px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            color: #555;
+            border-radius: 20px;
             transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #2a2a2a;
         }
 
         .header-actions button:hover {
-            background: #e5e0d8;
-            transform: scale(0.96);
+            background: #f5f0ea;
         }
 
         .header-actions .profile-btn {
-            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
+            background: #1a1a1a;
             color: white;
-            padding: 8px 18px;
+            padding: 6px 14px;
+            border-radius: 20px;
         }
 
         .header-actions .profile-btn:hover {
-            background: linear-gradient(135deg, #e85a3a, #e03a1a);
+            background: #333;
         }
 
-        /* ===== SUBHEAD ===== */
-        .subhead {
-            color: #6b6b6b;
+        .header-actions .profile-btn i {
             font-size: 14px;
-            margin-top: -12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #f0ede8;
+        }
+
+        /* ===== SUBHEADER ===== */
+        .subhead {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e8e3dc;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .subhead .online-count {
             background: #e8f5e9;
             color: #2e7d32;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+        }
+
+        .subhead .online-count i {
+            font-size: 10px;
         }
 
         /* ===== POST FORM ===== */
         .post-form {
-            background: linear-gradient(135deg, #faf8f6, #f5f2ee);
-            border-radius: 24px;
-            padding: 18px 18px 16px;
-            margin-bottom: 24px;
-            border: 1px solid #e8e3da;
+            background: #f8f5f0;
+            border-radius: 16px;
+            padding: 14px 14px 12px;
+            margin-bottom: 20px;
+        }
+
+        .post-form .form-label {
+            font-size: 13px;
+            color: #777;
+            font-weight: 500;
+            margin-bottom: 6px;
         }
 
         .form-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .form-row select,
-        .form-row input[type="text"] {
+        .form-row select {
             flex: 1;
-            min-width: 120px;
-            padding: 10px 16px;
-            border: 2px solid #e0dbd2;
-            border-radius: 40px;
+            min-width: 100px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
             background: white;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
-            transition: 0.2s;
             font-weight: 500;
+            color: #333;
+            cursor: pointer;
         }
 
-        .form-row select:focus,
-        .form-row input[type="text"]:focus {
-            border-color: #ff6b4a;
-            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.12);
+        .form-row select:focus {
+            border-color: #1a1a1a;
         }
 
         .form-row label {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-weight: 600;
-            font-size: 14px;
+            font-weight: 500;
+            font-size: 13px;
             background: white;
-            padding: 6px 18px 6px 14px;
-            border-radius: 40px;
-            border: 2px solid #e0dbd2;
+            padding: 4px 14px 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
             cursor: pointer;
             transition: 0.2s;
         }
 
         .form-row label:hover {
-            border-color: #ff6b4a;
+            border-color: #1a1a1a;
         }
 
         .form-row label input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #ff6b4a;
+            width: 16px;
+            height: 16px;
+            accent-color: #1a1a1a;
             cursor: pointer;
         }
 
         .post-form textarea {
             width: 100%;
-            border: 2px solid #e0dbd2;
-            border-radius: 20px;
-            padding: 14px 18px;
-            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
             resize: vertical;
-            min-height: 100px;
+            min-height: 70px;
             font-family: inherit;
             background: white;
             outline: none;
             transition: 0.2s;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .post-form textarea:focus {
-            border-color: #ff6b4a;
-            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.08);
+            border-color: #1a1a1a;
         }
 
         .post-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 14px;
+            margin-top: 10px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .post-actions .left {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #888;
             flex-wrap: wrap;
         }
 
         .post-actions .left .char-count {
-            background: #f0ede8;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 500;
+            background: white;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #ddd;
         }
 
         .post-actions .left .char-count.warning {
             background: #fff3e0;
+            border-color: #ffb74d;
             color: #e65100;
         }
 
         .post-actions .left .char-count.danger {
             background: #ffebee;
+            border-color: #ef9a9a;
             color: #c62828;
         }
 
+        .post-actions .left .action-icon {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 8px;
+            transition: 0.2s;
+            color: #666;
+        }
+
+        .post-actions .left .action-icon:hover {
+            background: #f0ebe4;
+        }
+
         .btn-primary {
-            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
+            background: #1a1a1a;
             border: none;
             color: white;
             font-weight: 700;
-            font-size: 15px;
-            padding: 12px 32px;
-            border-radius: 40px;
+            font-size: 13px;
+            padding: 8px 24px;
+            border-radius: 20px;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(255, 107, 74, 0.4);
+        .btn-primary i {
+            font-size: 14px;
         }
 
-        .btn-primary:active {
-            transform: scale(0.96);
+        .btn-primary:hover {
+            background: #333;
+            transform: scale(0.97);
         }
 
         .btn-primary:disabled {
@@ -281,293 +305,185 @@
             pointer-events: none;
         }
 
-        /* ===== ANON PROFILE MODAL ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 32px;
-            max-width: 440px;
-            width: 100%;
-            padding: 32px 28px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal h2 {
-            font-size: 22px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modal .sub {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .modal .form-group {
-            margin-bottom: 16px;
-        }
-
-        .modal .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 6px;
-            color: #333;
-        }
-
-        .modal .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0dbd2;
-            border-radius: 40px;
-            font-size: 15px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        .modal .form-group input:focus {
-            border-color: #ff6b4a;
-            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.1);
-        }
-
-        .modal .emoji-grid {
+        /* ===== STICKER PICKER ===== */
+        .sticker-picker {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
-            gap: 6px;
-            margin: 12px 0 16px;
-        }
-
-        .modal .emoji-grid button {
-            font-size: 28px;
-            padding: 6px;
-            border: 2px solid transparent;
+            gap: 4px;
+            padding: 10px;
+            background: white;
             border-radius: 12px;
-            cursor: pointer;
-            background: #f8f6f4;
-            transition: 0.2s;
+            border: 1px solid #ddd;
+            margin-top: 8px;
         }
 
-        .modal .emoji-grid button:hover {
-            background: #ff6b4a20;
-            border-color: #ff6b4a;
-            transform: scale(1.1);
+        .sticker-picker.hidden {
+            display: none;
         }
 
-        .modal .emoji-grid button.selected {
-            background: #ff6b4a20;
-            border-color: #ff6b4a;
-            box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.2);
-        }
-
-        .modal .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal .modal-actions button {
-            flex: 1;
-            padding: 12px;
+        .sticker-picker button {
+            font-size: 26px;
+            padding: 4px;
             border: none;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 15px;
+            background: transparent;
             cursor: pointer;
+            border-radius: 8px;
             transition: 0.2s;
         }
 
-        .modal .modal-actions .btn-cancel {
-            background: #f0ede8;
-            color: #333;
-        }
-
-        .modal .modal-actions .btn-cancel:hover {
-            background: #e5e0d8;
-        }
-
-        .modal .modal-actions .btn-save {
-            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
-            color: white;
-        }
-
-        .modal .modal-actions .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
+        .sticker-picker button:hover {
+            background: #f0ebe4;
+            transform: scale(1.1);
         }
 
         /* ===== TABS ===== */
         .tabs {
             display: flex;
-            gap: 4px;
-            background: #f0ede8;
-            border-radius: 40px;
-            padding: 4px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
+            gap: 2px;
+            background: #f0ebe4;
+            border-radius: 24px;
+            padding: 3px;
+            margin-bottom: 16px;
         }
 
         .tabs button {
             flex: 1;
             border: none;
             background: transparent;
-            padding: 10px 8px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 14px;
-            color: #6b6b6b;
+            padding: 8px 4px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #777;
             cursor: pointer;
             transition: 0.2s;
-            min-width: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
         }
 
+        .tabs button i {
+            font-size: 14px;
+        }
+
         .tabs button.active {
             background: white;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-            color: #1e1e1e;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            color: #1a1a1a;
         }
 
         .tabs button:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.4);
         }
 
         /* ===== FEED ===== */
         .feed {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .post-card {
-            background: #fcfaf8;
-            border-radius: 24px;
-            padding: 18px 16px 14px;
-            border: 1px solid #ece8e2;
+            background: #faf8f5;
+            border-radius: 16px;
+            padding: 14px 14px 12px;
+            border: 1px solid #e8e3dc;
             transition: 0.2s;
-            position: relative;
         }
 
         .post-card:hover {
-            border-color: #d9d2c8;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border-color: #d5cec4;
         }
 
         .post-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-            color: #6b6b6b;
-            margin-bottom: 10px;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 6px;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 4px;
         }
 
         .post-meta .user-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .post-meta .user-avatar {
-            font-size: 28px;
+            font-size: 20px;
             line-height: 1;
         }
 
         .post-meta .user-name {
             font-weight: 700;
-            color: #1e1e1e;
-            font-size: 14px;
+            color: #1a1a1a;
+            font-size: 13px;
         }
 
         .post-meta .user-name .anon-id {
             font-weight: 400;
             color: #999;
-            font-size: 12px;
+            font-size: 11px;
+        }
+
+        .post-meta .tag {
+            background: #e8e3dc;
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #555;
         }
 
         .post-meta .badge {
             background: #ffd9cc;
             color: #a3412a;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            padding: 2px 12px;
-            border-radius: 40px;
-        }
-
-        .post-meta .tag {
-            background: #eae7e0;
-            padding: 2px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 1px 8px;
+            border-radius: 12px;
         }
 
         .post-meta .time {
-            font-size: 12px;
+            font-size: 11px;
             color: #999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .post-meta .time i {
+            font-size: 10px;
         }
 
         .post-content {
-            font-size: 15px;
-            line-height: 1.6;
-            margin: 8px 0 14px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 6px 0 10px;
             word-break: break-word;
         }
 
         .post-content.adult {
-            filter: blur(8px);
+            filter: blur(6px);
             user-select: none;
             cursor: pointer;
             transition: 0.3s;
-            background: #f5f2ee;
-            padding: 12px 16px;
-            border-radius: 12px;
+            background: #f0ebe4;
+            padding: 10px 14px;
+            border-radius: 10px;
             text-align: center;
             color: #999;
+            font-size: 13px;
         }
 
         .post-content.adult::before {
-            content: "🔞 Conteúdo para adultos — toca para revelar";
+            content: "🔞 Conteúdo para adultos — toca para ver";
             display: block;
             font-weight: 600;
-            font-size: 14px;
         }
 
         .post-content.adult.revealed {
@@ -584,114 +500,111 @@
         /* ===== REACTIONS ===== */
         .reactions {
             display: flex;
-            gap: 4px;
+            gap: 3px;
             flex-wrap: wrap;
-            margin: 10px 0 8px;
+            margin: 6px 0 4px;
         }
 
         .reaction-btn {
-            background: #f5f2ee;
+            background: #f0ebe4;
             border: none;
-            padding: 4px 12px 4px 8px;
-            border-radius: 40px;
-            font-size: 14px;
+            padding: 2px 10px 2px 6px;
+            border-radius: 16px;
+            font-size: 13px;
             cursor: pointer;
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             font-weight: 500;
             color: #555;
         }
 
         .reaction-btn:hover {
-            background: #ff6b4a20;
+            background: #e5ddd4;
             transform: scale(1.05);
         }
 
         .reaction-btn.active {
-            background: #ff6b4a20;
-            border: 1px solid #ff6b4a;
+            background: #1a1a1a;
+            color: white;
         }
 
         .reaction-btn .count {
-            font-size: 12px;
-            color: #888;
+            font-size: 11px;
         }
 
         .reaction-btn.active .count {
-            color: #ff6b4a;
-        }
-
-        .reaction-picker {
-            display: flex;
-            gap: 4px;
-            padding: 6px;
-            background: white;
-            border-radius: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            z-index: 10;
-            margin-bottom: 8px;
-        }
-
-        .reaction-picker button {
-            font-size: 24px;
-            padding: 4px 8px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            border-radius: 30px;
-            transition: 0.2s;
-        }
-
-        .reaction-picker button:hover {
-            background: #f0ede8;
-            transform: scale(1.2);
+            color: #ccc;
         }
 
         .post-actions-bar {
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 14px;
-            color: #666;
-            border-top: 1px solid #ece8e2;
-            padding-top: 12px;
-            margin-top: 6px;
+            gap: 6px;
+            font-size: 13px;
+            color: #777;
+            border-top: 1px solid #e8e3dc;
+            padding-top: 10px;
+            margin-top: 4px;
             flex-wrap: wrap;
         }
 
         .post-actions-bar button {
             background: none;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            color: #666;
+            color: #777;
             font-weight: 500;
-            padding: 6px 12px;
-            border-radius: 40px;
+            padding: 4px 10px;
+            border-radius: 16px;
             transition: 0.2s;
         }
 
-        .post-actions-bar button:hover {
-            background: #f5f2ee;
-            color: #ff6b4a;
+        .post-actions-bar button i {
+            font-size: 14px;
         }
 
-        .post-actions-bar .reaction-toggle {
-            position: relative;
+        .post-actions-bar button:hover {
+            background: #f0ebe4;
+            color: #1a1a1a;
+        }
+
+        .post-actions-bar .like-btn {
+            color: #e74c3c;
+        }
+
+        .post-actions-bar .like-btn i {
+            font-size: 15px;
+        }
+
+        .post-actions-bar .like-btn:hover {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+
+        .post-actions-bar .comment-btn i {
+            font-size: 14px;
+        }
+
+        .post-actions-bar .share-btn i {
+            font-size: 14px;
+            color: #25D366;
+        }
+
+        .post-actions-bar .share-btn:hover {
+            background: #e8f5e9;
+            color: #128C7E;
         }
 
         .comments-area {
-            margin-top: 14px;
+            margin-top: 10px;
             border-top: 1px dashed #ddd;
-            padding-top: 12px;
+            padding-top: 10px;
         }
 
         .comments-area.hidden {
@@ -699,122 +612,96 @@
         }
 
         .comment {
-            font-size: 14px;
-            padding: 8px 0 8px 14px;
-            border-left: 3px solid #ffd9cc;
-            margin-bottom: 8px;
-            padding-left: 14px;
-            background: #faf8f6;
-            border-radius: 0 12px 12px 0;
+            font-size: 13px;
+            padding: 6px 0 6px 12px;
+            border-left: 2px solid #ddd;
+            margin-bottom: 6px;
+            padding-left: 12px;
         }
 
         .comment .user {
             font-weight: 700;
-            color: #1e1e1e;
+            color: #1a1a1a;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            font-size: 12px;
         }
 
         .comment .user .avatar-small {
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .comment .time {
-            font-size: 12px;
+            font-size: 11px;
             color: #999;
-            margin-left: 8px;
+            margin-left: 6px;
+            font-weight: 400;
         }
 
         .comment .content {
             margin-top: 2px;
+            font-size: 13px;
         }
 
         .comment-form {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-top: 8px;
             flex-wrap: wrap;
         }
 
         .comment-form input {
             flex: 1;
-            min-width: 140px;
-            padding: 10px 16px;
-            border: 2px solid #e0dbd2;
-            border-radius: 40px;
+            min-width: 120px;
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
             font-size: 13px;
             outline: none;
             transition: 0.2s;
         }
 
         .comment-form input:focus {
-            border-color: #ff6b4a;
-            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.08);
+            border-color: #1a1a1a;
         }
 
         .comment-form button {
-            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
+            background: #1a1a1a;
             color: white;
             border: none;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 700;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .comment-form button i {
+            font-size: 12px;
         }
 
         .comment-form button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
-        }
-
-        /* ===== STICKERS ===== */
-        .sticker-picker {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
-            padding: 12px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            z-index: 10;
-            margin-bottom: 8px;
-            min-width: 200px;
-        }
-
-        .sticker-picker button {
-            font-size: 32px;
-            padding: 4px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: 0.2s;
-        }
-
-        .sticker-picker button:hover {
-            background: #f0ede8;
-            transform: scale(1.15);
+            background: #333;
         }
 
         /* ===== LOADER / EMPTY ===== */
         .loader {
             text-align: center;
-            padding: 40px 0;
+            padding: 30px 0;
             color: #999;
         }
 
         .loader .spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f0ede8;
-            border-top-color: #ff6b4a;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f0ebe4;
+            border-top-color: #1a1a1a;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -827,37 +714,38 @@
 
         .empty {
             text-align: center;
-            padding: 40px 0;
+            padding: 30px 0;
             color: #999;
             font-style: italic;
+            font-size: 14px;
         }
 
         .empty .big-emoji {
-            font-size: 48px;
+            font-size: 40px;
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         /* ===== TOAST ===== */
         .toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 80px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1e1e1e;
+            transform: translateX(-50%) translateY(80px);
+            background: #1a1a1a;
             color: white;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-size: 14px;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 13px;
             font-weight: 500;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             opacity: 0;
-            transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             z-index: 999;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .toast.show {
@@ -865,46 +753,331 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            max-width: 420px;
+            width: 100%;
+            padding: 28px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: modalIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal .sub {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .modal .form-group {
+            margin-bottom: 14px;
+        }
+
+        .modal .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .modal .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .modal .form-group input:focus {
+            border-color: #1a1a1a;
+        }
+
+        .modal .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            margin: 8px 0 12px;
+        }
+
+        .modal .emoji-grid button {
+            font-size: 24px;
+            padding: 6px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #f8f5f0;
+            transition: 0.2s;
+        }
+
+        .modal .emoji-grid button:hover {
+            background: #f0ebe4;
+            transform: scale(1.05);
+        }
+
+        .modal .emoji-grid button.selected {
+            background: #1a1a1a20;
+            border-color: #1a1a1a;
+        }
+
+        .modal .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .modal .modal-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .modal .modal-actions .btn-cancel {
+            background: #f0ebe4;
+            color: #333;
+        }
+
+        .modal .modal-actions .btn-cancel:hover {
+            background: #e5ddd4;
+        }
+
+        .modal .modal-actions .btn-save {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .modal .modal-actions .btn-save:hover {
+            background: #333;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #e8e3dc;
+            padding: 8px 8px 12px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .bottom-nav button {
+            background: none;
+            border: none;
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 16px;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .bottom-nav button i {
+            font-size: 20px;
+        }
+
+        .bottom-nav button:hover {
+            color: #1a1a1a;
+        }
+
+        .bottom-nav button.active {
+            color: #1a1a1a;
+        }
+
+        .bottom-nav button.active i {
+            color: #ff6b4a;
+        }
+
+        /* ===== PAGES ===== */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page .back-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            padding: 4px 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page .back-btn i {
+            font-size: 16px;
+        }
+
+        .page .back-btn:hover {
+            color: #1a1a1a;
+        }
+
+        .page h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page .content {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .page .content h3 {
+            font-size: 16px;
+            margin: 16px 0 8px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page .content p {
+            margin-bottom: 10px;
+        }
+
+        .page .content ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .page .content ul li {
+            margin-bottom: 4px;
+        }
+
+        .page .content .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .page .content .info-item {
+            background: #f8f5f0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: center;
+        }
+
+        .page .content .info-item i {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .page .content .info-item .label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .page .content .info-item .value {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
             .app {
-                padding: 14px 12px 20px;
-                border-radius: 24px;
+                padding: 12px 12px 80px;
             }
             .logo {
-                font-size: 20px;
+                font-size: 19px;
             }
             .header-actions button {
-                padding: 6px 12px;
                 font-size: 12px;
+                padding: 4px 10px;
             }
             .modal {
-                padding: 24px 18px;
+                padding: 20px 16px;
             }
             .modal .emoji-grid {
                 grid-template-columns: repeat(6, 1fr);
             }
-            .tabs button {
-                font-size: 12px;
-                padding: 8px 4px;
-            }
-            .post-actions .left {
-                gap: 8px;
-            }
-            .reaction-picker {
-                position: relative;
-                bottom: auto;
-                margin-bottom: 0;
-                flex-wrap: wrap;
-            }
             .sticker-picker {
-                grid-template-columns: repeat(4, 1fr);
-                position: relative;
-                bottom: auto;
-                margin-bottom: 0;
+                grid-template-columns: repeat(6, 1fr);
+            }
+            .bottom-nav button {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+            .bottom-nav button i {
+                font-size: 18px;
+            }
+            .page .content .info-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -912,14 +1085,11 @@
         .hidden {
             display: none !important;
         }
-        .relative {
-            position: relative;
+        .text-center {
+            text-align: center;
         }
         .mt-8 {
             margin-top: 8px;
-        }
-        .text-center {
-            text-align: center;
         }
         .gap-4 {
             gap: 4px;
@@ -930,21 +1100,33 @@
         .items-center {
             align-items: center;
         }
+        .text-success {
+            color: #25D366;
+        }
+        .text-danger {
+            color: #e74c3c;
+        }
+        .text-warning {
+            color: #f39c12;
+        }
+        .text-info {
+            color: #3498db;
+        }
     </style>
 </head>
 <body>
 
     <!-- ===== TOAST ===== -->
-    <div id="toast" class="toast">✅</div>
+    <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span id="toastMessage">Sucesso!</span></div>
 
     <!-- ===== MODAL PERFIL ===== -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal">
-            <h2>👤 Editar Perfil Anónimo</h2>
-            <p class="sub">Personaliza a tua identidade no DesabaChat</p>
+            <h2><i class="fas fa-user-edit" style="color:#ff6b4a;"></i> Editar Perfil</h2>
+            <p class="sub">Personaliza a tua identidade anónima</p>
 
             <div class="form-group">
-                <label>Escolhe um emoji / ícone</label>
+                <label><i class="fas fa-smile"></i> Escolhe o teu ícone</label>
                 <div class="emoji-grid" id="emojiGrid">
                     <button data-emoji="😊">😊</button>
                     <button data-emoji="😎">😎</button>
@@ -962,108 +1144,238 @@
                     <button data-emoji="👻">👻</button>
                     <button data-emoji="🤖">🤖</button>
                     <button data-emoji="👽">👽</button>
+                    <button data-emoji="😍">😍</button>
+                    <button data-emoji="🥳">🥳</button>
+                    <button data-emoji="😱">😱</button>
+                    <button data-emoji="🤯">🤯</button>
+                    <button data-emoji="😤">😤</button>
+                    <button data-emoji="🥺">🥺</button>
+                    <button data-emoji="😈">😈</button>
+                    <button data-emoji="👼">👼</button>
+                    <button data-emoji="🦁">🦁</button>
+                    <button data-emoji="🐉">🐉</button>
+                    <button data-emoji="🦋">🦋</button>
+                    <button data-emoji="🌸">🌸</button>
+                    <button data-emoji="🌺">🌺</button>
+                    <button data-emoji="🍀">🍀</button>
+                    <button data-emoji="🎸">🎸</button>
+                    <button data-emoji="🏀">🏀</button>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Nome anónimo</label>
+                <label><i class="fas fa-tag"></i> Nome anónimo</label>
                 <input type="text" id="anonNameInput" placeholder="Ex: anonimo12345" maxlength="20" />
-                <div style="font-size:12px;color:#999;margin-top:4px;">Máx. 20 caracteres</div>
+                <div style="font-size:11px;color:#999;margin-top:4px;"><i class="fas fa-info-circle"></i> Máx. 20 caracteres</div>
             </div>
 
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeProfileModal()">Cancelar</button>
-                <button class="btn-save" onclick="saveProfile()">💾 Guardar Perfil</button>
+                <button class="btn-cancel" onclick="closeProfileModal()"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save"></i> Guardar</button>
             </div>
         </div>
     </div>
 
     <!-- ===== MAIN APP ===== -->
-    <div class="app">
+    <div class="app" id="app">
 
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo">
-                <span class="emoji-big">🗣️</span> DesabaChat
-                <span class="beta">BETA</span>
+        <!-- PÁGINA PRINCIPAL -->
+        <div id="mainPage" class="page active">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-comment-dots"></i> DesabaChat
+                    <span class="beta">BETA</span>
+                </div>
+                <div class="header-actions">
+                    <button class="profile-btn" onclick="openProfileModal()">
+                        <i class="fas fa-user-circle"></i> <span id="headerAnonDisplay">anonimo</span>
+                    </button>
+                </div>
             </div>
-            <div class="header-actions">
-                <button class="profile-btn" onclick="openProfileModal()">
-                    👤 <span id="headerAnonDisplay">anonimo</span>
+
+            <div class="subhead">
+                <span><i class="fas fa-comment" style="color:#ff6b4a;"></i> Desabafa, conta um segredo, espalha a fofoca...</span>
+                <span class="online-count"><i class="fas fa-circle" style="color:#4caf50;font-size:8px;"></i> <span id="onlineCount">12</span> online</span>
+            </div>
+
+            <!-- POST FORM -->
+            <div class="post-form">
+                <div class="form-label"><i class="fas fa-pen-fancy"></i> Publicar em</div>
+                <div class="form-row">
+                    <select id="postCategory">
+                        <option value="desabafos"><i class="fas fa-comment"></i> p/desabafos</option>
+                        <option value="segredos"><i class="fas fa-secret"></i> p/segredos</option>
+                        <option value="fofocas"><i class="fas fa-pepper-hot"></i> p/fofocas</option>
+                    </select>
+                    <label>
+                        <input type="checkbox" id="postAdult" /> <i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i> 18+
+                    </label>
+                </div>
+                <textarea id="postContent" placeholder="O que tens a dizer?"></textarea>
+                <div class="post-actions">
+                    <div class="left">
+                        <button class="action-icon" title="Adicionar imagem"><i class="fas fa-image"></i></button>
+                        <span class="char-count" id="charCount">0 / 1000</span>
+                        <button class="action-icon sticker-toggle" onclick="toggleStickerPicker()" title="Stickers"><i class="fas fa-smile"></i></button>
+                    </div>
+                    <button class="btn-primary" id="publishBtn"><i class="fas fa-paper-plane"></i> Publicar</button>
+                </div>
+                <div id="stickerPicker" class="sticker-picker hidden">
+                    <button data-sticker="😊">😊</button>
+                    <button data-sticker="😂">😂</button>
+                    <button data-sticker="🤣">🤣</button>
+                    <button data-sticker="❤️">❤️</button>
+                    <button data-sticker="🔥">🔥</button>
+                    <button data-sticker="✨">✨</button>
+                    <button data-sticker="🌟">🌟</button>
+                    <button data-sticker="💀">💀</button>
+                    <button data-sticker="👀">👀</button>
+                    <button data-sticker="🤔">🤔</button>
+                    <button data-sticker="😎">😎</button>
+                    <button data-sticker="🥺">🥺</button>
+                    <button data-sticker="😤">😤</button>
+                    <button data-sticker="💪">💪</button>
+                    <button data-sticker="🙏">🙏</button>
+                    <button data-sticker="🎉">🎉</button>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs" id="tabsContainer">
+                <button class="active" data-filter="tudo"><i class="fas fa-newspaper"></i> Tudo</button>
+                <button data-filter="segredos"><i class="fas fa-user-secret"></i> Segredos</button>
+                <button data-filter="fofocas"><i class="fas fa-pepper-hot"></i> Fofocas</button>
+                <button data-filter="desabafos"><i class="fas fa-comment"></i> Desabafos</button>
+            </div>
+
+            <!-- FEED -->
+            <div id="feed" class="feed">
+                <div class="loader">
+                    <div class="spinner"></div>
+                    <p style="margin-top:8px;font-size:13px;"><i class="fas fa-sync fa-spin"></i> A carregar...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PÁGINA DE TERMOS -->
+        <div id="termsPage" class="page">
+            <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <h2><i class="fas fa-file-contract" style="color:#ff6b4a;"></i> Termos de Utilização</h2>
+            <div class="content">
+                <p><i class="fas fa-calendar-alt"></i> <strong>Última atualização:</strong> 17 de Agosto de 2026</p>
+
+                <h3><i class="fas fa-info-circle"></i> 1. Introdução</h3>
+                <p>O DesabaChat é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas, feita para entretenimento e para a comunidade. Estes Termos de Utilização ("Termos") são um contrato vinculativo entre ti e o DesabaChat e regulam o teu acesso e uso do serviço.</p>
+
+                <h3><i class="fas fa-check-circle"></i> 2. Aceitação dos Termos</h3>
+                <p>Ao criar conta, publicar, comentar ou simplesmente usar o DesabaChat, confirmas que leste, percebeste e aceitas estes Termos, a nossa Política de Privacidade e a Política de Cookies.</p>
+
+                <h3><i class="fas fa-gavel"></i> 3. Conteúdo e Conduta</h3>
+                <p>O DesabaChat é uma plataforma de expressão livre, mas com responsabilidade. Ao publicar, comprometes-te a:</p>
+                <ul>
+                    <li><i class="fas fa-ban" style="color:#e74c3c;"></i> Não publicar conteúdo ilegal, difamatório ou ofensivo</li>
+                    <li><i class="fas fa-user-secret"></i> Não partilhar informações pessoais de terceiros</li>
+                    <li><i class="fas fa-handshake"></i> Não usar a plataforma para assédio ou bullying</li>
+                    <li><i class="fas fa-users"></i> Respeitar os outros utilizadores</li>
+                </ul>
+
+                <h3><i class="fas fa-lock"></i> 4. Privacidade e Anonimato</h3>
+                <p>O DesabaChat valoriza o teu anonimato. Não guardamos informações pessoais identificáveis. O teu ID anónimo é gerado aleatoriamente e só tu podes personalizá-lo.</p>
+
+                <h3><i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i> 5. Conteúdo +18</h3>
+                <p>Conteúdo para adultos deve ser devidamente sinalizado com a marca +18. Utilizadores menores de 18 anos não devem aceder a este tipo de conteúdo.</p>
+
+                <h3><i class="fas fa-shield-alt"></i> 6. Moderação</h3>
+                <p>Reservamo-nos o direito de remover conteúdo que viole estes Termos, sem aviso prévio. Utilizadores que violem repetidamente as regras podem ter sua conta suspensa.</p>
+
+                <h3><i class="fas fa-copyright"></i> 7. Propriedade Intelectual</h3>
+                <p>Todo o conteúdo publicado no DesabaChat é de responsabilidade do utilizador que o publicou. O DesabaChat não se responsabiliza pelo conteúdo gerado pelos utilizadores.</p>
+
+                <h3><i class="fas fa-envelope"></i> 8. Contacto</h3>
+                <p>Para questões relacionadas com estes Termos, contacta-nos através do WhatsApp ou email.</p>
+
+                <p style="margin-top:16px;font-size:12px;color:#999;border-top:1px solid #eee;padding-top:12px;">
+                    <i class="fas fa-info-circle"></i> Documento informativo, redigido à luz da lei moçambicana. A versão vinculativa é a portuguesa. Não constitui aconselhamento jurídico.
+                </p>
+            </div>
+        </div>
+
+        <!-- PÁGINA DE INFORMAÇÃO -->
+        <div id="infoPage" class="page">
+            <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <h2><i class="fas fa-info-circle" style="color:#ff6b4a;"></i> Sobre o DesabaChat</h2>
+            <div class="content">
+                <p><strong>DesabaChat</strong> é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas.</p>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-flag" style="color:#ff6b4a;"></i>
+                        <div class="label">País</div>
+                        <div class="value">🇲🇿 Moçambique</div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-shield-alt" style="color:#2e7d32;"></i>
+                        <div class="label">Privacidade</div>
+                        <div class="value">🔒 100% Anónimo</div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-users" style="color:#3498db;"></i>
+                        <div class="label">Comunidade</div>
+                        <div class="value">🤝 Unida</div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-code" style="color:#f39c12;"></i>
+                        <div class="label">Versão</div>
+                        <div class="value">v1.0.0</div>
+                    </div>
+                </div>
+
+                <h3><i class="fas fa-flag"></i> Made in Moçambique</h3>
+                <p>Orgulhosamente criado por moçambicanos, para a comunidade moçambicana e todos que querem desabafar livremente.</p>
+
+                <h3><i class="fas fa-lock"></i> 100% Anónimo</h3>
+                <p>Não guardamos dados pessoais. O teu anonimato é garantido. Cada utilizador recebe um ID único e aleatório.</p>
+
+                <h3><i class="fas fa-comment"></i> Desabafa à Vontade</h3>
+                <p>Partilha os teus desabafos, segredos mais profundos ou as fofocas mais quentes da tua comunidade.</p>
+
+                <h3><i class="fas fa-heart" style="color:#e74c3c;"></i> Comunidade</h3>
+                <p>Acreditamos no poder da comunidade. Apoia-te e apoia outros membros nas suas jornadas.</p>
+
+                <h3><i class="fas fa-envelope"></i> Contacto</h3>
+                <p>Email: suporte@desabachat.co.mz</p>
+
+                <button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="openWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Falar no WhatsApp
                 </button>
             </div>
         </div>
 
-        <div class="subhead">
-            <span>💬 Desabafa, conta um segredo, espalha a fofoca — 100% anónimo</span>
-            <span class="online-count">🟢 <span id="onlineCount">12</span> online</span>
-        </div>
-
-        <!-- POST FORM -->
-        <div class="post-form">
-            <div class="form-row">
-                <select id="postCategory">
-                    <option value="desabafos">💬 Desabafos</option>
-                    <option value="segredos">🤫 Segredos</option>
-                    <option value="fofocas">🍿 Fofocas</option>
-                </select>
-                <label>
-                    <input type="checkbox" id="postAdult" /> 🔞 18+
-                </label>
-            </div>
-            <textarea id="postContent" placeholder="O que tens a dizer? (máx. 1000 caracteres)" maxlength="1000"></textarea>
-            <div class="post-actions">
-                <div class="left">
-                    <span>📷</span>
-                    <span class="char-count" id="charCount">0 / 1000</span>
-                    <button class="sticker-toggle" style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="toggleStickerPicker()">😊</button>
-                </div>
-                <button class="btn-primary" id="publishBtn">🚀 Publicar</button>
-            </div>
-            <div id="stickerPicker" class="sticker-picker hidden" style="margin-top:12px;">
-                <button data-sticker="😊">😊</button>
-                <button data-sticker="😂">😂</button>
-                <button data-sticker="🤣">🤣</button>
-                <button data-sticker="❤️">❤️</button>
-                <button data-sticker="🔥">🔥</button>
-                <button data-sticker="✨">✨</button>
-                <button data-sticker="🌟">🌟</button>
-                <button data-sticker="💀">💀</button>
-                <button data-sticker="👀">👀</button>
-                <button data-sticker="🤔">🤔</button>
-                <button data-sticker="😎">😎</button>
-                <button data-sticker="🥺">🥺</button>
-                <button data-sticker="😤">😤</button>
-                <button data-sticker="💪">💪</button>
-                <button data-sticker="🙏">🙏</button>
-                <button data-sticker="🎉">🎉</button>
-            </div>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs" id="tabsContainer">
-            <button class="active" data-filter="tudo">📰 Tudo</button>
-            <button data-filter="segredos">🤫 Segredos</button>
-            <button data-filter="fofocas">🍿 Fofocas</button>
-            <button data-filter="desabafos">💬 Desabafos</button>
-        </div>
-
-        <!-- FEED -->
-        <div id="feed" class="feed">
-            <div class="loader">
-                <div class="spinner"></div>
-                <p style="margin-top:12px;">📡 A carregar...</p>
-            </div>
-        </div>
-
-        <div style="margin-top:28px; font-size:12px; color:#bbb; text-align:center; border-top:1px solid #eee; padding-top:16px;">
-            DesabaChat · Moçambique · 100% anónimo · Feito com ❤️
+        <!-- BOTTOM NAV -->
+        <div class="bottom-nav">
+            <button class="active" onclick="showPage('mainPage')">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </button>
+            <button onclick="showPage('termsPage')">
+                <i class="fas fa-file-contract"></i>
+                <span>Termos</span>
+            </button>
+            <button onclick="showPage('infoPage')">
+                <i class="fas fa-info-circle"></i>
+                <span>Sobre</span>
+            </button>
+            <button onclick="openWhatsApp()">
+                <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+                <span>Suporte</span>
+            </button>
         </div>
     </div>
 
     <script>
         // ============================================================
-        //  SUPABASE CONFIG  —  SUBSTITUIR COM AS TUAS CREDENCIAIS
+        //  SUPABASE CONFIG
         // ============================================================
         const SUPABASE_URL = 'https://jjigreshcurxrijfelgw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_vYVUaefjf9boNeiaCAZlLw_IyWr2Ax3';
@@ -1073,14 +1385,12 @@
         // ============================================================
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Estado
         let currentFilter = 'tudo';
         let postsCache = [];
         let myAnonId = localStorage.getItem('desabachat_anon_id') || null;
         let myAnonEmoji = localStorage.getItem('desabachat_anon_emoji') || '😊';
         let myAnonName = localStorage.getItem('desabachat_anon_name') || null;
 
-        // DOM refs
         const feedEl = document.getElementById('feed');
         const postContent = document.getElementById('postContent');
         const postCategory = document.getElementById('postCategory');
@@ -1088,6 +1398,7 @@
         const publishBtn = document.getElementById('publishBtn');
         const charCount = document.getElementById('charCount');
         const toastEl = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
         const tabsContainer = document.getElementById('tabsContainer');
         const profileModal = document.getElementById('profileModal');
         const anonNameInput = document.getElementById('anonNameInput');
@@ -1099,10 +1410,35 @@
         let toastTimer;
 
         function showToast(msg, emoji = '✅') {
+            toastMessage.textContent = msg;
             toastEl.innerHTML = `${emoji} ${msg}`;
             toastEl.classList.add('show');
             clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3500);
+            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
+        }
+
+        // ============================================================
+        //  NAVEGAÇÃO
+        // ============================================================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+            const navMap = { 'mainPage': 0, 'termsPage': 1, 'infoPage': 2 };
+            if (navMap[pageId] !== undefined) {
+                document.querySelectorAll('.bottom-nav button')[navMap[pageId]]?.classList.add('active');
+            }
+        }
+
+        // ============================================================
+        //  WHATSAPP
+        // ============================================================
+        function openWhatsApp() {
+            const phone = '258840000000';
+            const message = encodeURIComponent('Olá! Preciso de ajuda no DesabaChat 🗣️');
+            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+            showToast('A abrir WhatsApp...', '💬');
         }
 
         // ============================================================
@@ -1156,7 +1492,6 @@
             renderFeed(postsCache);
         }
 
-        // Emoji grid selection
         document.querySelectorAll('#emojiGrid button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('#emojiGrid button').forEach(b => b.classList.remove('selected'));
@@ -1198,12 +1533,9 @@
                 postContent.value += sticker;
                 postContent.focus();
                 updateCharCount();
-                document.getElementById('stickerPicker').classList.add('hidden');
-                stickerPickerOpen = false;
             });
         });
 
-        // Close sticker picker on outside click
         document.addEventListener('click', function(e) {
             if (stickerPickerOpen && !e.target.closest('#stickerPicker') && !e.target.closest('.sticker-toggle')) {
                 document.getElementById('stickerPicker').classList.add('hidden');
@@ -1225,7 +1557,7 @@
         postContent.addEventListener('input', updateCharCount);
 
         // ============================================================
-        //  PUBLICAR POST
+        //  PUBLICAR
         // ============================================================
         publishBtn.addEventListener('click', async () => {
             const content = postContent.value.trim();
@@ -1244,7 +1576,7 @@
             const anonDisplay = getAnonDisplay();
 
             publishBtn.disabled = true;
-            publishBtn.textContent = '⏳ A publicar...';
+            publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A publicar...';
 
             try {
                 const { data, error } = await supabase
@@ -1273,7 +1605,7 @@
                 showToast('Erro ao publicar: ' + err.message, '❌');
             } finally {
                 publishBtn.disabled = false;
-                publishBtn.textContent = '🚀 Publicar';
+                publishBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
             }
         });
 
@@ -1281,7 +1613,8 @@
         //  CARREGAR POSTS
         // ============================================================
         async function loadPosts() {
-            feedEl.innerHTML = `<div class="loader"><div class="spinner"></div><p style="margin-top:12px;">📡 A carregar...</p></div>`;
+            feedEl.innerHTML =
+                `<div class="loader"><div class="spinner"></div><p style="margin-top:8px;font-size:13px;"><i class="fas fa-sync fa-spin"></i> A carregar...</p></div>`;
 
             try {
                 let query = supabase
@@ -1303,7 +1636,8 @@
                 renderFeed(postsCache);
             } catch (err) {
                 console.error(err);
-                feedEl.innerHTML = `<div class="empty"><span class="big-emoji">⚠️</span>Erro ao carregar: ${err.message}</div>`;
+                feedEl.innerHTML =
+                    `<div class="empty"><span class="big-emoji">⚠️</span>Erro ao carregar: ${err.message}</div>`;
             }
         }
 
@@ -1325,12 +1659,10 @@
                 const emoji = post.anon_emoji || '😊';
                 const displayName = post.anon_display || post.anon_id || 'anónimo';
 
-                // Reactions
                 const reactions = post.reactions || { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 };
                 const reactionKeys = ['❤️', '😂', '😮', '😢', '😡'];
                 const userReactions = JSON.parse(localStorage.getItem(`reactions_${post.id}`) || '[]');
 
-                // Comments
                 const comments = post.comments || [];
                 const commentCount = comments.length;
 
@@ -1343,10 +1675,10 @@
                       ${escapeHtml(displayName)}
                       <span class="anon-id">(${escapeHtml(post.anon_id || 'anonimo')})</span>
                     </span>
-                    ${isAdult ? '<span class="badge">🔞 18+</span>' : ''}
-                    <span class="tag">p/${escapeHtml(post.category || 'desabafos')}</span>
+                    ${isAdult ? '<span class="badge"><i class="fas fa-exclamation-triangle"></i> 18+</span>' : ''}
+                    <span class="tag"><i class="fas fa-tag"></i> p/${escapeHtml(post.category || 'desabafos')}</span>
                   </div>
-                  <span class="time">${timeAgo(post.created_at)}</span>
+                  <span class="time"><i class="far fa-clock"></i> ${timeAgo(post.created_at)}</span>
                 </div>
                 <div class="post-content ${adultClass}" data-adult="${isAdult}">
                   ${contentText}
@@ -1361,16 +1693,23 @@
                   `).join('')}
                 </div>
                 <div class="post-actions-bar">
-                  <button class="comment-toggle" data-post-id="${post.id}" onclick="toggleComments('${post.id}')">
-                    💬 <span>${commentCount}</span>
+                  <button class="like-btn" onclick="handleLike('${post.id}')">
+                    <i class="fas fa-heart"></i> <span id="like-count-${post.id}">${post.likes || 0}</span>
                   </button>
-                  <button onclick="sharePost('${post.id}')">📤 Partilhar</button>
+                  <button class="comment-btn" onclick="toggleComments('${post.id}')">
+                    <i class="fas fa-comment"></i> <span>${commentCount}</span>
+                  </button>
+                  <button class="share-btn" onclick="sharePost('${post.id}')">
+                    <i class="fas fa-share-alt"></i> Partilhar
+                  </button>
                 </div>
                 <div class="comments-area hidden" id="comments-${post.id}">
                   ${renderComments(comments)}
                   <div class="comment-form">
-                    <input type="text" placeholder="Comenta... (anónimo)" class="comment-input" data-post-id="${post.id}" />
-                    <button class="comment-submit" data-post-id="${post.id}" onclick="handleCommentSubmit(event)">Enviar 💬</button>
+                    <input type="text" placeholder="Escreve um comentário..." class="comment-input" data-post-id="${post.id}" />
+                    <button class="comment-submit" data-post-id="${post.id}" onclick="handleCommentSubmit(event)">
+                      <i class="fas fa-paper-plane"></i>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1379,14 +1718,12 @@
 
             feedEl.innerHTML = html;
 
-            // 18+ reveal
             document.querySelectorAll('.post-content.adult').forEach(el => {
                 el.addEventListener('click', function() {
                     this.classList.toggle('revealed');
                 });
             });
 
-            // Comment input enter key
             document.querySelectorAll('.comment-input').forEach(input => {
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
@@ -1402,7 +1739,7 @@
         // ============================================================
         function renderComments(comments) {
             if (!comments || comments.length === 0) {
-                return `<div style="color:#999; font-size:13px; padding:8px 0;">💭 Sem comentários. Sê o primeiro!</div>`;
+                return `<div style="color:#999;font-size:13px;padding:6px 0;"><i class="far fa-comment"></i> Sem comentários</div>`;
             }
             let html = '';
             for (const c of comments) {
@@ -1413,7 +1750,7 @@
                 <div class="user">
                   <span class="avatar-small">${emoji}</span>
                   ${escapeHtml(displayName)}
-                  <span class="time">${timeAgo(c.created_at)}</span>
+                  <span class="time"><i class="far fa-clock"></i> ${timeAgo(c.created_at)}</span>
                 </div>
                 <div class="content">${escapeHtml(c.content)}</div>
               </div>
@@ -1432,7 +1769,6 @@
             const userReactions = JSON.parse(localStorage.getItem(`reactions_${postId}`) || '[]');
             const hasReacted = userReactions.includes(reaction);
 
-            // Atualizar localmente
             const reactions = post.reactions || { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 };
             if (hasReacted) {
                 reactions[reaction] = (reactions[reaction] || 0) - 1;
@@ -1445,7 +1781,6 @@
 
             localStorage.setItem(`reactions_${postId}`, JSON.stringify(userReactions));
 
-            // Atualizar UI
             const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
             if (postCard) {
                 const reactionBtns = postCard.querySelectorAll('.reaction-btn');
@@ -1461,7 +1796,6 @@
                 });
             }
 
-            // Atualizar no banco
             try {
                 const { error } = await supabase
                     .from('posts')
@@ -1469,12 +1803,43 @@
                     .eq('id', postId);
 
                 if (error) throw error;
-
-                // Atualizar cache
                 post.reactions = reactions;
             } catch (err) {
                 console.error(err);
                 showToast('Erro ao atualizar reação', '❌');
+            }
+        }
+
+        // ============================================================
+        //  LIKE
+        // ============================================================
+        async function handleLike(postId) {
+            const post = postsCache.find(p => p.id == postId);
+            if (!post) return;
+
+            const currentLikes = post.likes || 0;
+            const newLikes = currentLikes + 1;
+
+            const likeSpan = document.getElementById(`like-count-${postId}`);
+            if (likeSpan) {
+                likeSpan.textContent = newLikes;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('posts')
+                    .update({ likes: newLikes })
+                    .eq('id', postId);
+
+                if (error) throw error;
+                post.likes = newLikes;
+                showToast('Adoraste este post! ❤️', '❤️');
+            } catch (err) {
+                console.error(err);
+                if (likeSpan) {
+                    likeSpan.textContent = currentLikes;
+                }
+                showToast('Erro ao adorar', '❌');
             }
         }
 
@@ -1542,11 +1907,10 @@
                     url: url,
                 }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(`${shareText} ${url}`).then(() => {
-                    showToast('Link copiado! 📋', '📤');
-                }).catch(() => {
-                    showToast('Partilha: ' + url, '📤');
-                });
+                const phone = '258840000000';
+                const message = encodeURIComponent(`${shareText}\n${url}`);
+                window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+                showToast('A abrir WhatsApp para partilhar...', '📤');
             }
         }
 
@@ -1567,7 +1931,7 @@
         });
 
         // ============================================================
-        //  UTILITY FUNCTIONS
+        //  UTILITY
         // ============================================================
         function escapeHtml(text) {
             if (!text) return '';
@@ -1584,7 +1948,7 @@
             if (diff < 60) return 'há ' + diff + 's';
             if (diff < 3600) return 'há ' + Math.floor(diff / 60) + 'm';
             if (diff < 86400) return 'há ' + Math.floor(diff / 3600) + 'h';
-            if (diff < 2592000) return 'há ' + Math.floor(diff / 86400) + 'd';
+            if (diff < 2592000) return 'há ' + Math.floor(diff / 8640) + 'd';
             return past.toLocaleDateString('pt-PT');
         }
 
@@ -1594,7 +1958,6 @@
         getOrCreateAnonId();
         updateHeader();
 
-        // Simular online count
         setInterval(() => {
             const count = Math.floor(Math.random() * 20) + 5;
             document.getElementById('onlineCount').textContent = count;
@@ -1602,26 +1965,7 @@
 
         loadPosts();
 
-        // ============================================================
-        //  SCHEMA SQL ATUALIZADO (para correr no Supabase)
-        // ============================================================
-        /*
-        -- ADICIONAR COLUNAS À TABELA POSTS
-        ALTER TABLE posts ADD COLUMN IF NOT EXISTS anon_display TEXT;
-        ALTER TABLE posts ADD COLUMN IF NOT EXISTS anon_emoji TEXT DEFAULT '😊';
-        ALTER TABLE posts ADD COLUMN IF NOT EXISTS reactions JSONB DEFAULT '{"❤️":0,"😂":0,"😮":0,"😢":0,"😡":0}';
-
-        -- ADICIONAR COLUNAS À TABELA COMMENTS
-        ALTER TABLE comments ADD COLUMN IF NOT EXISTS anon_display TEXT;
-        ALTER TABLE comments ADD COLUMN IF NOT EXISTS anon_emoji TEXT DEFAULT '😊';
-
-        -- Atualizar dados existentes
-        UPDATE posts SET anon_display = anon_id WHERE anon_display IS NULL;
-        UPDATE comments SET anon_display = anon_id WHERE anon_display IS NULL;
-        UPDATE posts SET anon_emoji = '😊' WHERE anon_emoji IS NULL;
-        UPDATE comments SET anon_emoji = '😊' WHERE anon_emoji IS NULL;
-        */
-        console.log('🚀 DesabaChat carregado!');
+        console.log('🚀 DesabaChat carregado com ícones!');
     </script>
 
 </body>
