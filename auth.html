@@ -13,10 +13,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <link rel="stylesheet" href="style.css">
-    <script src="config.js"></script>
-    <script src="auth.js"></script>
     
     <style>
+        /* Estilos específicos da página de autenticação */
         .auth-container {
             min-height: 100vh;
             display: flex;
@@ -54,6 +53,11 @@
             margin-top: 8px;
         }
         
+        .auth-logo p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
         .auth-tabs {
             display: flex;
             gap: 8px;
@@ -65,7 +69,7 @@
         
         .auth-tab {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             border: none;
             background: transparent;
             border-radius: 8px;
@@ -74,6 +78,7 @@
             font-family: 'Inter', sans-serif;
             transition: var(--transition);
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
         
         .auth-tab.active {
@@ -82,7 +87,7 @@
             box-shadow: var(--shadow);
         }
         
-        .auth-tab:hover {
+        .auth-tab:hover:not(.active) {
             color: var(--primary);
         }
         
@@ -104,10 +109,16 @@
             font-weight: 500;
             font-size: 0.85rem;
             color: var(--text-secondary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         
-        .form-group input {
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+        
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 10px 14px;
             border: 2px solid var(--border-color);
@@ -119,10 +130,52 @@
             font-size: 0.95rem;
         }
         
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
             outline: none;
+        }
+        
+        .form-group input.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(252,129,129,0.1);
+        }
+        
+        .form-group .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .form-group .error-message.show {
+            display: block;
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle input {
+            padding-right: 44px;
+        }
+        
+        .password-toggle .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+        }
+        
+        .password-toggle .toggle-btn:hover {
+            color: var(--text-secondary);
         }
         
         .auth-btn {
@@ -137,11 +190,16 @@
             cursor: pointer;
             transition: var(--transition);
             font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
-        .auth-btn:hover {
+        .auth-btn:hover:not(:disabled) {
             background: var(--primary-dark);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
         }
         
         .auth-btn:disabled {
@@ -161,57 +219,11 @@
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
+            cursor: pointer;
         }
         
         .auth-footer a:hover {
             text-decoration: underline;
-        }
-        
-        .social-auth {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .social-btn {
-            padding: 10px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius);
-            background: transparent;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .social-btn:hover {
-            border-color: var(--primary);
-            background: var(--bg-tertiary);
-        }
-        
-        .password-toggle {
-            position: relative;
-        }
-        
-        .password-toggle input {
-            padding-right: 40px;
-        }
-        
-        .password-toggle .toggle-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
         }
         
         .divider {
@@ -230,6 +242,75 @@
             height: 1px;
             background: var(--border-color);
         }
+        
+        /* Feedback de sucesso/erro */
+        .auth-message {
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            display: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .auth-message.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .auth-message.success {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .auth-message.error {
+            background: #fed7d7;
+            color: #9b2c2c;
+            border: 1px solid #fc8181;
+        }
+        
+        .auth-message.info {
+            background: #bee3f8;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+        
+        .password-strength {
+            margin-top: 6px;
+            display: flex;
+            gap: 4px;
+            height: 4px;
+        }
+        
+        .password-strength .bar {
+            flex: 1;
+            background: var(--border-color);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+        
+        .password-strength .bar.weak { background: var(--danger); }
+        .password-strength .bar.medium { background: var(--warning); }
+        .password-strength .bar.strong { background: var(--success); }
+        
+        .password-strength-text {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 24px 16px;
+            }
+            
+            .auth-tab {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -237,68 +318,89 @@
         <div class="auth-card">
             <div class="auth-logo">
                 <img src="icons/logo.svg" alt="Piripiri Chat" style="width:64px;height:64px;">
-                <h1>Piripiri Chat</h1>
-                <p style="color:var(--text-secondary);font-size:0.9rem;">Desabafa em anónimo</p>
+                <h1>🌶️ Piripiri Chat</h1>
+                <p>Desabafa em anónimo</p>
             </div>
             
+            <!-- Mensagem de Feedback -->
+            <div class="auth-message" id="authMessage"></div>
+            
             <div class="auth-tabs">
-                <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
-                <button class="auth-tab" onclick="switchTab('register')">Registar</button>
+                <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <button class="auth-tab" id="registerTab" onclick="switchTab('register')">
+                    <i class="fas fa-user-plus"></i> Registar
+                </button>
             </div>
             
             <!-- Login Form -->
             <div class="auth-form active" id="loginForm">
-                <form onsubmit="handleLogin(event)">
+                <form id="loginFormElement" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="loginEmail" placeholder="exemplo@email.com" required>
+                        <label><i class="fas fa-envelope"></i> Email <span class="required">*</span></label>
+                        <input type="email" id="loginEmail" placeholder="exemplo@email.com" required autocomplete="email">
+                        <div class="error-message" id="loginEmailError">Por favor, insere um email válido</div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Palavra-passe</label>
+                        <label><i class="fas fa-lock"></i> Palavra-passe <span class="required">*</span></label>
                         <div class="password-toggle">
-                            <input type="password" id="loginPassword" placeholder="••••••••" required>
+                            <input type="password" id="loginPassword" placeholder="Mínimo 6 caracteres" required autocomplete="current-password">
                             <button type="button" class="toggle-btn" onclick="togglePassword('loginPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
+                        <div class="error-message" id="loginPasswordError">A palavra-passe é obrigatória</div>
                     </div>
                     <button type="submit" class="auth-btn" id="loginBtn">
                         <i class="fas fa-sign-in-alt"></i> Entrar
                     </button>
                 </form>
                 <div class="auth-footer">
-                    <a href="#" onclick="resetPassword()">Esqueci-me da palavra-passe</a>
+                    <a onclick="handleForgotPassword()">Esqueci-me da palavra-passe</a>
                 </div>
             </div>
             
             <!-- Register Form -->
             <div class="auth-form" id="registerForm">
-                <form onsubmit="handleRegister(event)">
+                <form id="registerFormElement" onsubmit="handleRegister(event)">
                     <div class="form-group">
-                        <label><i class="fas fa-user"></i> Nome de Utilizador</label>
-                        <input type="text" id="registerUsername" placeholder="Utilizador" required>
+                        <label><i class="fas fa-user"></i> Nome de Utilizador <span class="required">*</span></label>
+                        <input type="text" id="registerUsername" placeholder="Ex: joao123" required autocomplete="username" minlength="3" maxlength="30">
+                        <div class="error-message" id="registerUsernameError">Mínimo 3 caracteres, sem espaços</div>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-user-tag"></i> Nome a Mostrar</label>
-                        <input type="text" id="registerDisplayName" placeholder="O teu nome">
+                        <input type="text" id="registerDisplayName" placeholder="O teu nome" autocomplete="name">
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="registerEmail" placeholder="exemplo@email.com" required>
+                        <label><i class="fas fa-envelope"></i> Email <span class="required">*</span></label>
+                        <input type="email" id="registerEmail" placeholder="exemplo@email.com" required autocomplete="email">
+                        <div class="error-message" id="registerEmailError">Por favor, insere um email válido</div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Palavra-passe</label>
+                        <label><i class="fas fa-lock"></i> Palavra-passe <span class="required">*</span></label>
                         <div class="password-toggle">
-                            <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required>
+                            <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" minlength="6" oninput="checkPasswordStrength(this.value)">
                             <button type="button" class="toggle-btn" onclick="togglePassword('registerPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="bar" id="strength1"></div>
+                            <div class="bar" id="strength2"></div>
+                            <div class="bar" id="strength3"></div>
+                        </div>
+                        <div class="password-strength-text" id="strengthText"></div>
+                        <div class="error-message" id="registerPasswordError">A palavra-passe deve ter pelo menos 6 caracteres</div>
                     </div>
                     <button type="submit" class="auth-btn" id="registerBtn">
                         <i class="fas fa-user-plus"></i> Criar Conta
                     </button>
                 </form>
+                <div class="auth-footer">
+                    Ao criar uma conta, concordas com os <a href="#">Termos de Serviço</a>
+                </div>
             </div>
         </div>
     </div>
@@ -306,25 +408,75 @@
     <div id="toastContainer"></div>
     
     <script>
-        let currentTab = 'login';
+        // ==================== CONFIGURAÇÕES ====================
+        const SUPABASE_URL = 'https://seu-projeto.supabase.co'; // ATUALIZAR
+        const SUPABASE_ANON_KEY = 'sua-chave-anon'; // ATUALIZAR
         
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let currentTab = 'login';
+        let isSubmitting = false;
+        
+        // ==================== UTILITÁRIOS ====================
+        function showAuthMessage(message, type = 'info') {
+            const msgEl = document.getElementById('authMessage');
+            msgEl.textContent = message;
+            msgEl.className = `auth-message show ${type}`;
             
-            if (tab === 'login') {
-                document.querySelector('.auth-tab:first-child').classList.add('active');
-                document.getElementById('loginForm').classList.add('active');
-            } else {
-                document.querySelector('.auth-tab:last-child').classList.add('active');
-                document.getElementById('registerForm').classList.add('active');
+            // Auto-hide após 5 segundos (apenas para info/success)
+            if (type !== 'error') {
+                setTimeout(() => {
+                    msgEl.className = 'auth-message';
+                }, 5000);
             }
+        }
+        
+        function hideAuthMessage() {
+            document.getElementById('authMessage').className = 'auth-message';
+        }
+        
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const colors = {
+                success: '#48bb78',
+                error: '#fc8181',
+                info: '#667eea',
+                warning: '#ed8936'
+            };
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${colors[type] || '#333'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 10px;
+                font-weight: 500;
+                z-index: 1000;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+                animation: slideUp 0.3s ease;
+                max-width: 90%;
+                font-family: 'Inter', sans-serif;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
         }
         
         function togglePassword(id) {
             const input = document.getElementById(id);
-            const btn = input.nextElementSibling;
+            const btn = input.parentElement.querySelector('.toggle-btn');
             if (input.type === 'password') {
                 input.type = 'text';
                 btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
@@ -334,64 +486,378 @@
             }
         }
         
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+        function checkPasswordStrength(password) {
+            const bars = [
+                document.getElementById('strength1'),
+                document.getElementById('strength2'),
+                document.getElementById('strength3')
+            ];
+            const text = document.getElementById('strengthText');
+            
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)) strength++;
+            
+            // Reset bars
+            bars.forEach(bar => {
+                bar.className = 'bar';
+            });
+            
+            if (password.length === 0) {
+                text.textContent = '';
+                return;
+            }
+            
+            if (strength <= 1) {
+                bars[0].className = 'bar weak';
+                text.textContent = 'Fraca';
+                text.style.color = 'var(--danger)';
+            } else if (strength === 2) {
+                bars[0].className = 'bar medium';
+                bars[1].className = 'bar medium';
+                text.textContent = 'Média';
+                text.style.color = 'var(--warning)';
+            } else {
+                bars.forEach(bar => bar.className = 'bar strong');
+                text.textContent = 'Forte';
+                text.style.color = 'var(--success)';
+            }
+        }
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            hideAuthMessage();
+            
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.getElementById('loginTab').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.getElementById('registerTab').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+        
+        // ==================== LOGIN ====================
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            if (isSubmitting) return;
+            
+            // Limpar mensagens anteriores
+            hideAuthMessage();
+            
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             
+            // Validação
+            let hasError = false;
+            const emailField = document.getElementById('loginEmail');
+            const passwordField = document.getElementById('loginPassword');
+            const emailError = document.getElementById('loginEmailError');
+            const passwordError = document.getElementById('loginPasswordError');
+            
+            emailField.classList.remove('error');
+            passwordField.classList.remove('error');
+            emailError.classList.remove('show');
+            passwordError.classList.remove('show');
+            
+            if (!email || !email.includes('@')) {
+                emailField.classList.add('error');
+                emailError.classList.add('show');
+                hasError = true;
+            }
+            
+            if (!password || password.length < 6) {
+                passwordField.classList.add('error');
+                passwordError.classList.add('show');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            // Submeter
+            isSubmitting = true;
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A entrar...';
             
             try {
-                await login(email, password);
+                console.log('🔐 A tentar login com:', email);
+                
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    console.error('❌ Erro no login:', error);
+                    
+                    if (error.message.includes('Invalid login credentials')) {
+                        showAuthMessage('Email ou palavra-passe incorretos. Tenta novamente.', 'error');
+                    } else if (error.message.includes('Email not confirmed')) {
+                        showAuthMessage('Por favor, confirma o teu email antes de entrar.', 'info');
+                    } else {
+                        showAuthMessage(error.message || 'Erro ao fazer login. Tenta novamente.', 'error');
+                    }
+                    return;
+                }
+                
+                if (data.user) {
+                    console.log('✅ Login bem-sucedido:', data.user.email);
+                    showAuthMessage('Login efetuado com sucesso! 🎉', 'success');
+                    
+                    // Redirecionar após pequeno delay
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }
+                
             } catch (error) {
-                // Erro já tratado no auth.js
+                console.error('❌ Erro inesperado:', error);
+                showAuthMessage('Ocorreu um erro inesperado. Tenta novamente.', 'error');
             } finally {
+                isSubmitting = false;
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
             }
         }
         
-        async function handleRegister(e) {
-            e.preventDefault();
-            const username = document.getElementById('registerUsername').value;
-            const displayName = document.getElementById('registerDisplayName').value || username;
-            const email = document.getElementById('registerEmail').value;
+        // ==================== REGISTO ====================
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            if (isSubmitting) return;
+            
+            // Limpar mensagens anteriores
+            hideAuthMessage();
+            
+            const username = document.getElementById('registerUsername').value.trim();
+            const displayName = document.getElementById('registerDisplayName').value.trim() || username;
+            const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
             
-            if (password.length < 6) {
-                showToast('A palavra-passe deve ter pelo menos 6 caracteres', 'error');
-                return;
+            // Validação
+            let hasError = false;
+            
+            const usernameField = document.getElementById('registerUsername');
+            const emailField = document.getElementById('registerEmail');
+            const passwordField = document.getElementById('registerPassword');
+            
+            const usernameError = document.getElementById('registerUsernameError');
+            const emailError = document.getElementById('registerEmailError');
+            const passwordError = document.getElementById('registerPasswordError');
+            
+            // Reset errors
+            [usernameField, emailField, passwordField].forEach(f => f.classList.remove('error'));
+            [usernameError, emailError, passwordError].forEach(e => e.classList.remove('show'));
+            
+            // Validar username
+            if (!username || username.length < 3) {
+                usernameField.classList.add('error');
+                usernameError.classList.add('show');
+                hasError = true;
             }
             
+            if (username.includes(' ')) {
+                usernameField.classList.add('error');
+                usernameError.textContent = 'O nome de utilizador não pode conter espaços';
+                usernameError.classList.add('show');
+                hasError = true;
+            }
+            
+            // Validar email
+            if (!email || !email.includes('@')) {
+                emailField.classList.add('error');
+                emailError.classList.add('show');
+                hasError = true;
+            }
+            
+            // Validar password
+            if (!password || password.length < 6) {
+                passwordField.classList.add('error');
+                passwordError.classList.add('show');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            // Submeter
+            isSubmitting = true;
             const btn = document.getElementById('registerBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A registar...';
             
             try {
-                await register(email, password, username, displayName);
+                console.log('📝 A registar utilizador:', { username, email });
+                
+                // Verificar se o username já existe
+                const { data: existingUser, error: checkError } = await supabase
+                    .from('profiles')
+                    .select('username')
+                    .eq('username', username)
+                    .single();
+                
+                if (existingUser) {
+                    showAuthMessage('Este nome de utilizador já está em uso. Escolhe outro.', 'error');
+                    usernameField.classList.add('error');
+                    isSubmitting = false;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+                    return;
+                }
+                
+                // Criar utilizador
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            username: username,
+                            display_name: displayName || username
+                        }
+                    }
+                });
+                
+                if (error) {
+                    console.error('❌ Erro no registo:', error);
+                    
+                    if (error.message.includes('User already registered')) {
+                        showAuthMessage('Este email já está registado. Faz login ou recupera a password.', 'error');
+                    } else {
+                        showAuthMessage(error.message || 'Erro ao criar conta. Tenta novamente.', 'error');
+                    }
+                    return;
+                }
+                
+                if (data.user) {
+                    console.log('✅ Utilizador criado:', data.user.email);
+                    
+                    // Criar perfil
+                    try {
+                        const { error: profileError } = await supabase
+                            .from('profiles')
+                            .insert({
+                                id: data.user.id,
+                                username: username,
+                                display_name: displayName || username,
+                                created_at: new Date().toISOString()
+                            });
+                        
+                        if (profileError) {
+                            console.error('⚠️ Erro ao criar perfil:', profileError);
+                        }
+                    } catch (profileError) {
+                        console.error('⚠️ Erro ao criar perfil:', profileError);
+                    }
+                    
+                    showAuthMessage(
+                        'Conta criada com sucesso! 🎉 Verifica o teu email para confirmar a conta.',
+                        'success'
+                    );
+                    
+                    // Limpar formulário
+                    document.getElementById('registerFormElement').reset();
+                    document.getElementById('passwordStrength').querySelectorAll('.bar').forEach(b => b.className = 'bar');
+                    document.getElementById('strengthText').textContent = '';
+                    
+                    // Redirecionar após delay
+                    setTimeout(() => {
+                        switchTab('login');
+                        document.getElementById('loginEmail').value = email;
+                        showAuthMessage('Conta criada! Faz login para continuar.', 'info');
+                    }, 3000);
+                }
+                
             } catch (error) {
-                // Erro já tratado no auth.js
+                console.error('❌ Erro inesperado:', error);
+                showAuthMessage('Ocorreu um erro inesperado. Tenta novamente.', 'error');
             } finally {
+                isSubmitting = false;
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
             }
         }
         
-        async function resetPassword() {
+        // ==================== RECUPERAÇÃO DE PASSWORD ====================
+        async function handleForgotPassword() {
             const email = prompt('Introduz o teu email para recuperar a palavra-passe:');
-            if (email) {
-                await resetPassword(email);
+            if (!email) return;
+            
+            if (!email.includes('@')) {
+                showToast('Por favor, insere um email válido', 'error');
+                return;
+            }
+            
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/reset-password.html`
+                });
+                
+                if (error) {
+                    console.error('❌ Erro ao enviar email:', error);
+                    showToast(error.message || 'Erro ao enviar email de recuperação', 'error');
+                    return;
+                }
+                
+                showToast('Email de recuperação enviado! 📧 Verifica a tua caixa de entrada.', 'success');
+            } catch (error) {
+                console.error('❌ Erro inesperado:', error);
+                showToast('Erro ao enviar email. Tenta novamente.', 'error');
             }
         }
         
-        // Verificar se já está autenticado
+        // ==================== VERIFICAÇÃO DE AUTENTICAÇÃO ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                window.location.href = 'index.html';
+            // Verificar se o utilizador já está autenticado
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    console.log('👤 Utilizador já autenticado:', user.email);
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.log('🔍 Utilizador não autenticado');
             }
+            
+            // Verificar parâmetros da URL (ex: registered=true)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                showAuthMessage('Conta criada com sucesso! Faz login para continuar.', 'success');
+            }
+            
+            // Aplicar tema
+            if (localStorage.getItem('piripiri_theme') === 'dark') {
+                document.body.classList.add('dark');
+            }
+            
+            // Adicionar listeners de validação em tempo real
+            document.getElementById('registerUsername').addEventListener('input', function() {
+                const error = document.getElementById('registerUsernameError');
+                if (this.value.length >= 3 && !this.value.includes(' ')) {
+                    this.classList.remove('error');
+                    error.classList.remove('show');
+                }
+            });
+            
+            document.getElementById('registerEmail').addEventListener('input', function() {
+                const error = document.getElementById('registerEmailError');
+                if (this.value.includes('@')) {
+                    this.classList.remove('error');
+                    error.classList.remove('show');
+                }
+            });
+            
+            document.getElementById('registerPassword').addEventListener('input', function() {
+                const error = document.getElementById('registerPasswordError');
+                if (this.value.length >= 6) {
+                    this.classList.remove('error');
+                    error.classList.remove('show');
+                }
+            });
         });
     </script>
 </body>
