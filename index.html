@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DesabaChat - Desabafa, conta um segredo, espalha a fofoca</title>
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js">
     </script>
     <style>
@@ -17,61 +16,130 @@
 
         body {
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f5f3f0;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e3da 100%);
             color: #1e1e1e;
             padding: 16px;
-            max-width: 640px;
+            max-width: 680px;
             margin: 0 auto;
+            min-height: 100vh;
         }
 
-        /* ===== CARD / CONTAINER ===== */
+        /* ===== APP CONTAINER ===== */
         .app {
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
             padding: 20px 18px 30px;
             margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f0ede8;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .logo {
-            font-size: 28px;
+            font-size: 26px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1a1a1a;
+        }
+
+        .logo .emoji-big {
+            font-size: 32px;
+        }
+
+        .logo .beta {
+            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
+            color: white;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            padding: 2px 12px;
+            border-radius: 40px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .header-actions button {
+            background: #f0ede8;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #1a1a1a;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 14px;
-            margin-bottom: 20px;
+            color: #2a2a2a;
         }
 
-        .logo span {
-            background: #ff6b4a;
+        .header-actions button:hover {
+            background: #e5e0d8;
+            transform: scale(0.96);
+        }
+
+        .header-actions .profile-btn {
+            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
             color: white;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 0 12px;
-            border-radius: 40px;
-            line-height: 28px;
+            padding: 8px 18px;
         }
 
+        .header-actions .profile-btn:hover {
+            background: linear-gradient(135deg, #e85a3a, #e03a1a);
+        }
+
+        /* ===== SUBHEAD ===== */
         .subhead {
-            color: #5e5e5e;
+            color: #6b6b6b;
             font-size: 14px;
-            margin-top: -10px;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #eee;
+            margin-top: -12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0ede8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .subhead .online-count {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* ===== POST FORM ===== */
         .post-form {
-            background: #faf8f6;
-            border-radius: 20px;
-            padding: 16px 16px 14px;
+            background: linear-gradient(135deg, #faf8f6, #f5f2ee);
+            border-radius: 24px;
+            padding: 18px 18px 16px;
             margin-bottom: 24px;
+            border: 1px solid #e8e3da;
         }
 
         .form-row {
@@ -86,57 +154,65 @@
         .form-row input[type="text"] {
             flex: 1;
             min-width: 120px;
-            padding: 10px 14px;
-            border: 1px solid #ddd;
+            padding: 10px 16px;
+            border: 2px solid #e0dbd2;
             border-radius: 40px;
             background: white;
             font-size: 14px;
             outline: none;
             transition: 0.2s;
+            font-weight: 500;
         }
 
         .form-row select:focus,
         .form-row input[type="text"]:focus {
             border-color: #ff6b4a;
-            box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.15);
+            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.12);
         }
 
         .form-row label {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 14px;
             background: white;
-            padding: 6px 16px 6px 12px;
+            padding: 6px 18px 6px 14px;
             border-radius: 40px;
-            border: 1px solid #ddd;
+            border: 2px solid #e0dbd2;
             cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .form-row label:hover {
+            border-color: #ff6b4a;
         }
 
         .form-row label input[type="checkbox"] {
             width: 18px;
             height: 18px;
             accent-color: #ff6b4a;
+            cursor: pointer;
         }
 
         .post-form textarea {
             width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 18px;
-            padding: 14px 16px;
+            border: 2px solid #e0dbd2;
+            border-radius: 20px;
+            padding: 14px 18px;
             font-size: 15px;
             resize: vertical;
-            min-height: 90px;
+            min-height: 100px;
             font-family: inherit;
             background: white;
             outline: none;
             transition: 0.2s;
+            line-height: 1.6;
         }
 
         .post-form textarea:focus {
             border-color: #ff6b4a;
-            box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.1);
+            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.08);
         }
 
         .post-actions {
@@ -153,32 +229,51 @@
             gap: 12px;
             align-items: center;
             font-size: 14px;
-            color: #555;
+            color: #666;
+            flex-wrap: wrap;
         }
 
-        .post-actions .left i {
-            font-style: normal;
-            background: #eee;
-            padding: 4px 12px;
+        .post-actions .left .char-count {
+            background: #f0ede8;
+            padding: 4px 14px;
             border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .post-actions .left .char-count.warning {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .post-actions .left .char-count.danger {
+            background: #ffebee;
+            color: #c62828;
         }
 
         .btn-primary {
-            background: #ff6b4a;
+            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
             border: none;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 15px;
-            padding: 10px 28px;
+            padding: 12px 32px;
             border-radius: 40px;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 4px 12px rgba(255, 107, 74, 0.25);
+            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary:hover {
-            background: #e85a3a;
-            transform: scale(0.97);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(255, 107, 74, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
         }
 
         .btn-primary:disabled {
@@ -186,40 +281,158 @@
             pointer-events: none;
         }
 
-        /* ===== ANON ACCOUNT CTA ===== */
-        .anon-cta {
-            background: #f1efe8;
-            border-radius: 24px;
-            padding: 18px 18px 16px;
-            margin-bottom: 28px;
-            font-size: 14px;
-            line-height: 1.5;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+        /* ===== ANON PROFILE MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
-        .anon-cta p {
-            max-width: 70%;
+        .modal-overlay.active {
+            display: flex;
         }
 
-        .anon-cta a {
-            background: #1e1e1e;
-            color: white;
-            padding: 8px 20px;
+        .modal {
+            background: white;
+            border-radius: 32px;
+            max-width: 440px;
+            width: 100%;
+            padding: 32px 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal .sub {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .modal .form-group {
+            margin-bottom: 16px;
+        }
+
+        .modal .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .modal .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0dbd2;
             border-radius: 40px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 13px;
-            white-space: nowrap;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .modal .form-group input:focus {
+            border-color: #ff6b4a;
+            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.1);
+        }
+
+        .modal .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px;
+            margin: 12px 0 16px;
+        }
+
+        .modal .emoji-grid button {
+            font-size: 28px;
+            padding: 6px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #f8f6f4;
+            transition: 0.2s;
+        }
+
+        .modal .emoji-grid button:hover {
+            background: #ff6b4a20;
+            border-color: #ff6b4a;
+            transform: scale(1.1);
+        }
+
+        .modal .emoji-grid button.selected {
+            background: #ff6b4a20;
+            border-color: #ff6b4a;
+            box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.2);
+        }
+
+        .modal .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal .modal-actions .btn-cancel {
+            background: #f0ede8;
+            color: #333;
+        }
+
+        .modal .modal-actions .btn-cancel:hover {
+            background: #e5e0d8;
+        }
+
+        .modal .modal-actions .btn-save {
+            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
+            color: white;
+        }
+
+        .modal .modal-actions .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
         }
 
         /* ===== TABS ===== */
         .tabs {
             display: flex;
             gap: 4px;
-            background: #f0eeea;
+            background: #f0ede8;
             border-radius: 40px;
             padding: 4px;
             margin-bottom: 22px;
@@ -230,67 +443,92 @@
             flex: 1;
             border: none;
             background: transparent;
-            padding: 10px 6px;
+            padding: 10px 8px;
             border-radius: 40px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 14px;
-            color: #4a4a4a;
+            color: #6b6b6b;
             cursor: pointer;
             transition: 0.2s;
             min-width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
         .tabs button.active {
             background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             color: #1e1e1e;
         }
 
         .tabs button:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         /* ===== FEED ===== */
         .feed {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 16px;
         }
 
         .post-card {
             background: #fcfaf8;
-            border-radius: 22px;
-            padding: 18px 16px 12px;
+            border-radius: 24px;
+            padding: 18px 16px 14px;
             border: 1px solid #ece8e2;
-            transition: 0.15s;
+            transition: 0.2s;
+            position: relative;
         }
 
         .post-card:hover {
             border-color: #d9d2c8;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .post-meta {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 13px;
             color: #6b6b6b;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
+            gap: 6px;
         }
 
-        .post-meta .user {
-            font-weight: 600;
+        .post-meta .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-meta .user-avatar {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .post-meta .user-name {
+            font-weight: 700;
             color: #1e1e1e;
+            font-size: 14px;
+        }
+
+        .post-meta .user-name .anon-id {
+            font-weight: 400;
+            color: #999;
+            font-size: 12px;
         }
 
         .post-meta .badge {
             background: #ffd9cc;
             color: #a3412a;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             padding: 2px 12px;
             border-radius: 40px;
-            margin-left: 6px;
         }
 
         .post-meta .tag {
@@ -298,33 +536,128 @@
             padding: 2px 12px;
             border-radius: 40px;
             font-size: 12px;
+            font-weight: 600;
+        }
+
+        .post-meta .time {
+            font-size: 12px;
+            color: #999;
         }
 
         .post-content {
             font-size: 15px;
-            line-height: 1.5;
-            margin: 6px 0 12px;
+            line-height: 1.6;
+            margin: 8px 0 14px;
             word-break: break-word;
         }
 
         .post-content.adult {
-            filter: blur(6px);
+            filter: blur(8px);
             user-select: none;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
+            background: #f5f2ee;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-align: center;
+            color: #999;
+        }
+
+        .post-content.adult::before {
+            content: "🔞 Conteúdo para adultos — toca para revelar";
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .post-content.adult.revealed {
             filter: blur(0);
             user-select: auto;
+            background: transparent;
+            padding: 0;
+        }
+
+        .post-content.adult.revealed::before {
+            display: none;
+        }
+
+        /* ===== REACTIONS ===== */
+        .reactions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin: 10px 0 8px;
+        }
+
+        .reaction-btn {
+            background: #f5f2ee;
+            border: none;
+            padding: 4px 12px 4px 8px;
+            border-radius: 40px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .reaction-btn:hover {
+            background: #ff6b4a20;
+            transform: scale(1.05);
+        }
+
+        .reaction-btn.active {
+            background: #ff6b4a20;
+            border: 1px solid #ff6b4a;
+        }
+
+        .reaction-btn .count {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .reaction-btn.active .count {
+            color: #ff6b4a;
+        }
+
+        .reaction-picker {
+            display: flex;
+            gap: 4px;
+            padding: 6px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            z-index: 10;
+            margin-bottom: 8px;
+        }
+
+        .reaction-picker button {
+            font-size: 24px;
+            padding: 4px 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+
+        .reaction-picker button:hover {
+            background: #f0ede8;
+            transform: scale(1.2);
         }
 
         .post-actions-bar {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
             font-size: 14px;
-            color: #555;
+            color: #666;
             border-top: 1px solid #ece8e2;
             padding-top: 12px;
             margin-top: 6px;
@@ -337,19 +670,22 @@
             font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             cursor: pointer;
-            color: #555;
+            color: #666;
             font-weight: 500;
-            padding: 4px 2px;
+            padding: 6px 12px;
+            border-radius: 40px;
+            transition: 0.2s;
         }
 
         .post-actions-bar button:hover {
+            background: #f5f2ee;
             color: #ff6b4a;
         }
 
-        .post-actions-bar .like-btn.liked {
-            color: #ff6b4a;
+        .post-actions-bar .reaction-toggle {
+            position: relative;
         }
 
         .comments-area {
@@ -358,96 +694,175 @@
             padding-top: 12px;
         }
 
+        .comments-area.hidden {
+            display: none;
+        }
+
         .comment {
             font-size: 14px;
-            padding: 6px 0 6px 8px;
+            padding: 8px 0 8px 14px;
             border-left: 3px solid #ffd9cc;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             padding-left: 14px;
+            background: #faf8f6;
+            border-radius: 0 12px 12px 0;
         }
 
         .comment .user {
-            font-weight: 600;
+            font-weight: 700;
             color: #1e1e1e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .comment .user .avatar-small {
+            font-size: 18px;
         }
 
         .comment .time {
             font-size: 12px;
-            color: #888;
+            color: #999;
             margin-left: 8px;
+        }
+
+        .comment .content {
+            margin-top: 2px;
         }
 
         .comment-form {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
             flex-wrap: wrap;
         }
 
         .comment-form input {
             flex: 1;
             min-width: 140px;
-            padding: 8px 14px;
-            border: 1px solid #ddd;
+            padding: 10px 16px;
+            border: 2px solid #e0dbd2;
             border-radius: 40px;
             font-size: 13px;
             outline: none;
+            transition: 0.2s;
         }
 
         .comment-form input:focus {
             border-color: #ff6b4a;
+            box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.08);
         }
 
         .comment-form button {
-            background: #1e1e1e;
+            background: linear-gradient(135deg, #ff6b4a, #ff4a2a);
             color: white;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 24px;
             border-radius: 40px;
-            font-weight: 500;
+            font-weight: 700;
             cursor: pointer;
             font-size: 13px;
+            transition: 0.2s;
         }
 
         .comment-form button:hover {
-            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
+        }
+
+        /* ===== STICKERS ===== */
+        .sticker-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            padding: 12px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            z-index: 10;
+            margin-bottom: 8px;
+            min-width: 200px;
+        }
+
+        .sticker-picker button {
+            font-size: 32px;
+            padding: 4px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .sticker-picker button:hover {
+            background: #f0ede8;
+            transform: scale(1.15);
         }
 
         /* ===== LOADER / EMPTY ===== */
         .loader {
             text-align: center;
-            padding: 30px 0;
-            color: #888;
+            padding: 40px 0;
+            color: #999;
+        }
+
+        .loader .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0ede8;
+            border-top-color: #ff6b4a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .empty {
             text-align: center;
-            padding: 30px 0;
-            color: #888;
+            padding: 40px 0;
+            color: #999;
             font-style: italic;
+        }
+
+        .empty .big-emoji {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
         }
 
         /* ===== TOAST ===== */
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(100px);
             background: #1e1e1e;
             color: white;
-            padding: 12px 28px;
+            padding: 14px 32px;
             border-radius: 50px;
             font-size: 14px;
             font-weight: 500;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
             opacity: 0;
-            transition: 0.25s;
+            transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .toast.show {
             opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* ===== RESPONSIVE ===== */
@@ -457,31 +872,48 @@
             }
             .app {
                 padding: 14px 12px 20px;
-                border-radius: 20px;
+                border-radius: 24px;
             }
             .logo {
-                font-size: 22px;
+                font-size: 20px;
             }
-            .anon-cta p {
-                max-width: 100%;
-                margin-bottom: 8px;
+            .header-actions button {
+                padding: 6px 12px;
+                font-size: 12px;
             }
-            .anon-cta {
-                flex-direction: column;
-                align-items: flex-start;
+            .modal {
+                padding: 24px 18px;
             }
-            .post-actions .left {
-                flex-wrap: wrap;
+            .modal .emoji-grid {
+                grid-template-columns: repeat(6, 1fr);
             }
             .tabs button {
                 font-size: 12px;
                 padding: 8px 4px;
             }
+            .post-actions .left {
+                gap: 8px;
+            }
+            .reaction-picker {
+                position: relative;
+                bottom: auto;
+                margin-bottom: 0;
+                flex-wrap: wrap;
+            }
+            .sticker-picker {
+                grid-template-columns: repeat(4, 1fr);
+                position: relative;
+                bottom: auto;
+                margin-bottom: 0;
+            }
         }
 
-        /* small utilities */
+        /* ===== UTILITY ===== */
         .hidden {
             display: none !important;
+        }
+        .relative {
+            position: relative;
         }
         .mt-8 {
             margin-top: 8px;
@@ -492,23 +924,79 @@
         .gap-4 {
             gap: 4px;
         }
+        .flex {
+            display: flex;
+        }
+        .items-center {
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <!-- ===== TOAST ===== -->
-    <div id="toast" class="toast"></div>
+    <div id="toast" class="toast">✅</div>
+
+    <!-- ===== MODAL PERFIL ===== -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <h2>👤 Editar Perfil Anónimo</h2>
+            <p class="sub">Personaliza a tua identidade no DesabaChat</p>
+
+            <div class="form-group">
+                <label>Escolhe um emoji / ícone</label>
+                <div class="emoji-grid" id="emojiGrid">
+                    <button data-emoji="😊">😊</button>
+                    <button data-emoji="😎">😎</button>
+                    <button data-emoji="🤔">🤔</button>
+                    <button data-emoji="🔥">🔥</button>
+                    <button data-emoji="💪">💪</button>
+                    <button data-emoji="🌟">🌟</button>
+                    <button data-emoji="🦊">🦊</button>
+                    <button data-emoji="🐱">🐱</button>
+                    <button data-emoji="🐶">🐶</button>
+                    <button data-emoji="🦄">🦄</button>
+                    <button data-emoji="🌈">🌈</button>
+                    <button data-emoji="🎯">🎯</button>
+                    <button data-emoji="💀">💀</button>
+                    <button data-emoji="👻">👻</button>
+                    <button data-emoji="🤖">🤖</button>
+                    <button data-emoji="👽">👽</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nome anónimo</label>
+                <input type="text" id="anonNameInput" placeholder="Ex: anonimo12345" maxlength="20" />
+                <div style="font-size:12px;color:#999;margin-top:4px;">Máx. 20 caracteres</div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeProfileModal()">Cancelar</button>
+                <button class="btn-save" onclick="saveProfile()">💾 Guardar Perfil</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ===== MAIN APP ===== -->
-    <div class="app" id="app">
+    <div class="app">
 
         <!-- HEADER -->
-        <div class="logo">
-            🗣️ DesabaChat
-            <span>beta</span>
+        <div class="header">
+            <div class="logo">
+                <span class="emoji-big">🗣️</span> DesabaChat
+                <span class="beta">BETA</span>
+            </div>
+            <div class="header-actions">
+                <button class="profile-btn" onclick="openProfileModal()">
+                    👤 <span id="headerAnonDisplay">anonimo</span>
+                </button>
+            </div>
         </div>
+
         <div class="subhead">
-            Desabafa, conta um segredo, espalha a fofoca — 100% anónimo
+            <span>💬 Desabafa, conta um segredo, espalha a fofoca — 100% anónimo</span>
+            <span class="online-count">🟢 <span id="onlineCount">12</span> online</span>
         </div>
 
         <!-- POST FORM -->
@@ -520,44 +1008,56 @@
                     <option value="fofocas">🍿 Fofocas</option>
                 </select>
                 <label>
-                    <input type="checkbox" id="postAdult" /> 18+
+                    <input type="checkbox" id="postAdult" /> 🔞 18+
                 </label>
             </div>
             <textarea id="postContent" placeholder="O que tens a dizer? (máx. 1000 caracteres)" maxlength="1000"></textarea>
             <div class="post-actions">
                 <div class="left">
                     <span>📷</span>
-                    <i id="charCount">0 / 1000</i>
+                    <span class="char-count" id="charCount">0 / 1000</span>
+                    <button class="sticker-toggle" style="background:none;border:none;font-size:20px;cursor:pointer;" onclick="toggleStickerPicker()">😊</button>
                 </div>
-                <button class="btn-primary" id="publishBtn">Publicar</button>
+                <button class="btn-primary" id="publishBtn">🚀 Publicar</button>
             </div>
-        </div>
-
-        <!-- ANON CTA -->
-        <div class="anon-cta">
-            <p>
-                <strong>Segue pessoas e vê as publicações delas primeiro</strong><br />
-                Cria a tua conta anónima — ficas com o mesmo nome secreto.
-            </p>
-            <a href="#" id="anonAccountBtn">🔗 Criar conta anónima</a>
+            <div id="stickerPicker" class="sticker-picker hidden" style="margin-top:12px;">
+                <button data-sticker="😊">😊</button>
+                <button data-sticker="😂">😂</button>
+                <button data-sticker="🤣">🤣</button>
+                <button data-sticker="❤️">❤️</button>
+                <button data-sticker="🔥">🔥</button>
+                <button data-sticker="✨">✨</button>
+                <button data-sticker="🌟">🌟</button>
+                <button data-sticker="💀">💀</button>
+                <button data-sticker="👀">👀</button>
+                <button data-sticker="🤔">🤔</button>
+                <button data-sticker="😎">😎</button>
+                <button data-sticker="🥺">🥺</button>
+                <button data-sticker="😤">😤</button>
+                <button data-sticker="💪">💪</button>
+                <button data-sticker="🙏">🙏</button>
+                <button data-sticker="🎉">🎉</button>
+            </div>
         </div>
 
         <!-- TABS -->
         <div class="tabs" id="tabsContainer">
-            <button class="active" data-filter="tudo">Tudo</button>
-            <button data-filter="segredos">Segredos</button>
-            <button data-filter="fofocas">Fofocas</button>
-            <button data-filter="desabafos">Desabafos</button>
+            <button class="active" data-filter="tudo">📰 Tudo</button>
+            <button data-filter="segredos">🤫 Segredos</button>
+            <button data-filter="fofocas">🍿 Fofocas</button>
+            <button data-filter="desabafos">💬 Desabafos</button>
         </div>
 
         <!-- FEED -->
         <div id="feed" class="feed">
-            <div class="loader">📡 A carregar...</div>
+            <div class="loader">
+                <div class="spinner"></div>
+                <p style="margin-top:12px;">📡 A carregar...</p>
+            </div>
         </div>
 
-        <!-- FOOTER NOTE -->
-        <div style="margin-top:28px; font-size:12px; color:#aaa; text-align:center; border-top:1px solid #eee; padding-top:16px;">
-            DesabaChat · Moçambique · 100% anónimo
+        <div style="margin-top:28px; font-size:12px; color:#bbb; text-align:center; border-top:1px solid #eee; padding-top:16px;">
+            DesabaChat · Moçambique · 100% anónimo · Feito com ❤️
         </div>
     </div>
 
@@ -577,6 +1077,8 @@
         let currentFilter = 'tudo';
         let postsCache = [];
         let myAnonId = localStorage.getItem('desabachat_anon_id') || null;
+        let myAnonEmoji = localStorage.getItem('desabachat_anon_emoji') || '😊';
+        let myAnonName = localStorage.getItem('desabachat_anon_name') || null;
 
         // DOM refs
         const feedEl = document.getElementById('feed');
@@ -587,19 +1089,80 @@
         const charCount = document.getElementById('charCount');
         const toastEl = document.getElementById('toast');
         const tabsContainer = document.getElementById('tabsContainer');
-        const anonAccountBtn = document.getElementById('anonAccountBtn');
+        const profileModal = document.getElementById('profileModal');
+        const anonNameInput = document.getElementById('anonNameInput');
+        const headerAnonDisplay = document.getElementById('headerAnonDisplay');
 
         // ============================================================
         //  TOAST
         // ============================================================
         let toastTimer;
 
-        function showToast(msg) {
-            toastEl.textContent = msg;
+        function showToast(msg, emoji = '✅') {
+            toastEl.innerHTML = `${emoji} ${msg}`;
             toastEl.classList.add('show');
             clearTimeout(toastTimer);
             toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3500);
         }
+
+        // ============================================================
+        //  ANON PROFILE
+        // ============================================================
+        function getAnonDisplay() {
+            if (myAnonName) return myAnonName;
+            return myAnonId || 'anonimo';
+        }
+
+        function getAnonFullDisplay() {
+            return `${myAnonEmoji} ${getAnonDisplay()}`;
+        }
+
+        function updateHeader() {
+            headerAnonDisplay.textContent = getAnonFullDisplay();
+        }
+
+        function openProfileModal() {
+            if (!myAnonId) getOrCreateAnonId();
+            anonNameInput.value = myAnonName || '';
+            document.querySelectorAll('#emojiGrid button').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.emoji === myAnonEmoji);
+            });
+            profileModal.classList.add('active');
+        }
+
+        function closeProfileModal() {
+            profileModal.classList.remove('active');
+        }
+
+        function saveProfile() {
+            const name = anonNameInput.value.trim();
+            const selectedEmoji = document.querySelector('#emojiGrid button.selected');
+            const emoji = selectedEmoji ? selectedEmoji.dataset.emoji : myAnonEmoji;
+
+            if (name) {
+                myAnonName = name;
+                localStorage.setItem('desabachat_anon_name', name);
+            } else {
+                myAnonName = null;
+                localStorage.removeItem('desabachat_anon_name');
+            }
+
+            myAnonEmoji = emoji;
+            localStorage.setItem('desabachat_anon_emoji', emoji);
+
+            updateHeader();
+            closeProfileModal();
+            showToast('Perfil atualizado!', '💾');
+            renderFeed(postsCache);
+        }
+
+        // Emoji grid selection
+        document.querySelectorAll('#emojiGrid button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#emojiGrid button').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
 
         // ============================================================
         //  ANON ACCOUNT
@@ -614,22 +1177,52 @@
             const newId = generateAnonId();
             localStorage.setItem('desabachat_anon_id', newId);
             myAnonId = newId;
+            updateHeader();
             return newId;
         }
 
-        anonAccountBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const id = getOrCreateAnonId();
-            showToast(`✅ Conta anónima: ${id} (salva no teu navegador)`);
+        // ============================================================
+        //  STICKER PICKER
+        // ============================================================
+        let stickerPickerOpen = false;
+
+        function toggleStickerPicker() {
+            const picker = document.getElementById('stickerPicker');
+            stickerPickerOpen = !stickerPickerOpen;
+            picker.classList.toggle('hidden', !stickerPickerOpen);
+        }
+
+        document.querySelectorAll('#stickerPicker button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const sticker = this.dataset.sticker;
+                postContent.value += sticker;
+                postContent.focus();
+                updateCharCount();
+                document.getElementById('stickerPicker').classList.add('hidden');
+                stickerPickerOpen = false;
+            });
+        });
+
+        // Close sticker picker on outside click
+        document.addEventListener('click', function(e) {
+            if (stickerPickerOpen && !e.target.closest('#stickerPicker') && !e.target.closest('.sticker-toggle')) {
+                document.getElementById('stickerPicker').classList.add('hidden');
+                stickerPickerOpen = false;
+            }
         });
 
         // ============================================================
         //  CHAR COUNT
         // ============================================================
-        postContent.addEventListener('input', () => {
+        function updateCharCount() {
             const len = postContent.value.length;
             charCount.textContent = `${len} / 1000`;
-        });
+            charCount.classList.remove('warning', 'danger');
+            if (len > 800) charCount.classList.add('warning');
+            if (len > 950) charCount.classList.add('danger');
+        }
+
+        postContent.addEventListener('input', updateCharCount);
 
         // ============================================================
         //  PUBLICAR POST
@@ -637,20 +1230,21 @@
         publishBtn.addEventListener('click', async () => {
             const content = postContent.value.trim();
             if (!content) {
-                showToast('✏️ Escreve algo antes de publicar.');
+                showToast('Escreve algo antes de publicar.', '✏️');
                 return;
             }
             if (content.length > 1000) {
-                showToast('⚠️ Máximo de 1000 caracteres.');
+                showToast('Máximo de 1000 caracteres.', '⚠️');
                 return;
             }
 
             const category = postCategory.value;
             const isAdult = postAdult.checked;
             const anonId = getOrCreateAnonId();
+            const anonDisplay = getAnonDisplay();
 
             publishBtn.disabled = true;
-            publishBtn.textContent = 'A publicar...';
+            publishBtn.textContent = '⏳ A publicar...';
 
             try {
                 const { data, error } = await supabase
@@ -660,23 +1254,26 @@
                         category,
                         is_adult: isAdult,
                         anon_id: anonId,
+                        anon_display: anonDisplay,
+                        anon_emoji: myAnonEmoji,
                         likes: 0,
+                        reactions: { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 }
                     }])
                     .select();
 
                 if (error) throw error;
 
-                showToast('✅ Publicado com sucesso!');
+                showToast('Publicado com sucesso!', '🚀');
                 postContent.value = '';
                 postAdult.checked = false;
-                charCount.textContent = '0 / 1000';
+                updateCharCount();
                 await loadPosts();
             } catch (err) {
                 console.error(err);
-                showToast('❌ Erro ao publicar: ' + err.message);
+                showToast('Erro ao publicar: ' + err.message, '❌');
             } finally {
                 publishBtn.disabled = false;
-                publishBtn.textContent = 'Publicar';
+                publishBtn.textContent = '🚀 Publicar';
             }
         });
 
@@ -684,14 +1281,14 @@
         //  CARREGAR POSTS
         // ============================================================
         async function loadPosts() {
-            feedEl.innerHTML = '<div class="loader">📡 A carregar...</div>';
+            feedEl.innerHTML = `<div class="loader"><div class="spinner"></div><p style="margin-top:12px;">📡 A carregar...</p></div>`;
 
             try {
                 let query = supabase
                     .from('posts')
                     .select(`
                 *,
-                comments ( id, content, anon_id, created_at )
+                comments ( id, content, anon_id, anon_display, anon_emoji, created_at )
               `)
                     .order('created_at', { ascending: false });
 
@@ -706,7 +1303,7 @@
                 renderFeed(postsCache);
             } catch (err) {
                 console.error(err);
-                feedEl.innerHTML = `<div class="empty">⚠️ Erro ao carregar: ${err.message}</div>`;
+                feedEl.innerHTML = `<div class="empty"><span class="big-emoji">⚠️</span>Erro ao carregar: ${err.message}</div>`;
             }
         }
 
@@ -715,7 +1312,8 @@
         // ============================================================
         function renderFeed(posts) {
             if (!posts || posts.length === 0) {
-                feedEl.innerHTML = `<div class="empty">Nada por aqui... Publica algo! 🗣️</div>`;
+                feedEl.innerHTML =
+                    `<div class="empty"><span class="big-emoji">🗣️</span>Nada por aqui... Publica algo!</div>`;
                 return;
             }
 
@@ -724,38 +1322,55 @@
                 const isAdult = post.is_adult || false;
                 const adultClass = isAdult ? 'adult' : '';
                 const contentText = escapeHtml(post.content);
+                const emoji = post.anon_emoji || '😊';
+                const displayName = post.anon_display || post.anon_id || 'anónimo';
 
-                // Contar comentários
+                // Reactions
+                const reactions = post.reactions || { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 };
+                const reactionKeys = ['❤️', '😂', '😮', '😢', '😡'];
+                const userReactions = JSON.parse(localStorage.getItem(`reactions_${post.id}`) || '[]');
+
+                // Comments
                 const comments = post.comments || [];
                 const commentCount = comments.length;
 
                 html += `
               <div class="post-card" data-post-id="${post.id}">
                 <div class="post-meta">
-                  <span>
-                    <span class="user">${escapeHtml(post.anon_id || 'anónimo')}</span>
+                  <div class="user-info">
+                    <span class="user-avatar">${emoji}</span>
+                    <span class="user-name">
+                      ${escapeHtml(displayName)}
+                      <span class="anon-id">(${escapeHtml(post.anon_id || 'anonimo')})</span>
+                    </span>
+                    ${isAdult ? '<span class="badge">🔞 18+</span>' : ''}
                     <span class="tag">p/${escapeHtml(post.category || 'desabafos')}</span>
-                    ${isAdult ? '<span class="badge">18+</span>' : ''}
-                  </span>
-                  <span>${timeAgo(post.created_at)}</span>
+                  </div>
+                  <span class="time">${timeAgo(post.created_at)}</span>
                 </div>
                 <div class="post-content ${adultClass}" data-adult="${isAdult}">
                   ${contentText}
                 </div>
+                <div class="reactions">
+                  ${reactionKeys.map(key => `
+                    <button class="reaction-btn ${userReactions.includes(key) ? 'active' : ''}" 
+                            data-post-id="${post.id}" data-reaction="${key}"
+                            onclick="handleReaction('${post.id}', '${key}')">
+                      ${key} <span class="count">${reactions[key] || 0}</span>
+                    </button>
+                  `).join('')}
+                </div>
                 <div class="post-actions-bar">
-                  <button class="like-btn" data-post-id="${post.id}">
-                    ❤️ <span class="like-count">${post.likes || 0}</span>
+                  <button class="comment-toggle" data-post-id="${post.id}" onclick="toggleComments('${post.id}')">
+                    💬 <span>${commentCount}</span>
                   </button>
-                  <button class="comment-toggle" data-post-id="${post.id}">
-                    💬 ${commentCount}
-                  </button>
-                  <span style="font-size:12px; color:#999;">Partilhar no WhatsApp</span>
+                  <button onclick="sharePost('${post.id}')">📤 Partilhar</button>
                 </div>
                 <div class="comments-area hidden" id="comments-${post.id}">
                   ${renderComments(comments)}
                   <div class="comment-form">
                     <input type="text" placeholder="Comenta... (anónimo)" class="comment-input" data-post-id="${post.id}" />
-                    <button class="comment-submit" data-post-id="${post.id}">Enviar</button>
+                    <button class="comment-submit" data-post-id="${post.id}" onclick="handleCommentSubmit(event)">Enviar 💬</button>
                   </div>
                 </div>
               </div>
@@ -764,34 +1379,14 @@
 
             feedEl.innerHTML = html;
 
-            // Event listeners: revelar 18+
+            // 18+ reveal
             document.querySelectorAll('.post-content.adult').forEach(el => {
                 el.addEventListener('click', function() {
                     this.classList.toggle('revealed');
                 });
             });
 
-            // Event listeners: like
-            document.querySelectorAll('.like-btn').forEach(btn => {
-                btn.addEventListener('click', handleLike);
-            });
-
-            // Event listeners: toggle comentários
-            document.querySelectorAll('.comment-toggle').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const postId = this.dataset.postId;
-                    const area = document.getElementById(`comments-${postId}`);
-                    if (area) {
-                        area.classList.toggle('hidden');
-                    }
-                });
-            });
-
-            // Event listeners: submeter comentário
-            document.querySelectorAll('.comment-submit').forEach(btn => {
-                btn.addEventListener('click', handleCommentSubmit);
-            });
-
+            // Comment input enter key
             document.querySelectorAll('.comment-input').forEach(input => {
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
@@ -807,15 +1402,20 @@
         // ============================================================
         function renderComments(comments) {
             if (!comments || comments.length === 0) {
-                return `<div style="color:#999; font-size:13px; padding:6px 0;">Sem comentários. Sê o primeiro!</div>`;
+                return `<div style="color:#999; font-size:13px; padding:8px 0;">💭 Sem comentários. Sê o primeiro!</div>`;
             }
             let html = '';
             for (const c of comments) {
+                const emoji = c.anon_emoji || '😊';
+                const displayName = c.anon_display || c.anon_id || 'anónimo';
                 html += `
               <div class="comment">
-                <span class="user">${escapeHtml(c.anon_id || 'anónimo')}</span>
-                <span class="time">${timeAgo(c.created_at)}</span>
-                <div>${escapeHtml(c.content)}</div>
+                <div class="user">
+                  <span class="avatar-small">${emoji}</span>
+                  ${escapeHtml(displayName)}
+                  <span class="time">${timeAgo(c.created_at)}</span>
+                </div>
+                <div class="content">${escapeHtml(c.content)}</div>
               </div>
             `;
             }
@@ -823,34 +1423,68 @@
         }
 
         // ============================================================
-        //  HANDLE LIKE
+        //  REACTIONS
         // ============================================================
-        async function handleLike(e) {
-            const btn = e.currentTarget;
-            const postId = btn.dataset.postId;
-            const countSpan = btn.querySelector('.like-count');
-            if (!countSpan) return;
+        async function handleReaction(postId, reaction) {
+            const post = postsCache.find(p => p.id == postId);
+            if (!post) return;
 
-            // Optimistic update
-            const currentLikes = parseInt(countSpan.textContent) || 0;
-            const isLiked = btn.classList.contains('liked');
-            const newLikes = isLiked ? currentLikes - 1 : currentLikes + 1;
-            countSpan.textContent = newLikes;
-            btn.classList.toggle('liked');
+            const userReactions = JSON.parse(localStorage.getItem(`reactions_${postId}`) || '[]');
+            const hasReacted = userReactions.includes(reaction);
 
+            // Atualizar localmente
+            const reactions = post.reactions || { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 };
+            if (hasReacted) {
+                reactions[reaction] = (reactions[reaction] || 0) - 1;
+                const index = userReactions.indexOf(reaction);
+                if (index > -1) userReactions.splice(index, 1);
+            } else {
+                reactions[reaction] = (reactions[reaction] || 0) + 1;
+                userReactions.push(reaction);
+            }
+
+            localStorage.setItem(`reactions_${postId}`, JSON.stringify(userReactions));
+
+            // Atualizar UI
+            const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (postCard) {
+                const reactionBtns = postCard.querySelectorAll('.reaction-btn');
+                reactionBtns.forEach(btn => {
+                    const key = btn.dataset.reaction;
+                    const countSpan = btn.querySelector('.count');
+                    if (key === reaction) {
+                        btn.classList.toggle('active', !hasReacted);
+                    }
+                    if (countSpan) {
+                        countSpan.textContent = reactions[key] || 0;
+                    }
+                });
+            }
+
+            // Atualizar no banco
             try {
                 const { error } = await supabase
                     .from('posts')
-                    .update({ likes: newLikes })
+                    .update({ reactions })
                     .eq('id', postId);
 
                 if (error) throw error;
+
+                // Atualizar cache
+                post.reactions = reactions;
             } catch (err) {
                 console.error(err);
-                // Revert
-                countSpan.textContent = currentLikes;
-                btn.classList.toggle('liked');
-                showToast('❌ Erro ao atualizar like');
+                showToast('Erro ao atualizar reação', '❌');
+            }
+        }
+
+        // ============================================================
+        //  TOGGLE COMMENTS
+        // ============================================================
+        function toggleComments(postId) {
+            const area = document.getElementById(`comments-${postId}`);
+            if (area) {
+                area.classList.toggle('hidden');
             }
         }
 
@@ -865,11 +1499,12 @@
 
             const content = input.value.trim();
             if (!content) {
-                showToast('✏️ Escreve um comentário.');
+                showToast('Escreve um comentário.', '✏️');
                 return;
             }
 
             const anonId = getOrCreateAnonId();
+            const anonDisplay = getAnonDisplay();
 
             try {
                 const { data, error } = await supabase
@@ -878,18 +1513,40 @@
                         post_id: postId,
                         content,
                         anon_id: anonId,
+                        anon_display: anonDisplay,
+                        anon_emoji: myAnonEmoji,
                     }])
                     .select();
 
                 if (error) throw error;
 
-                showToast('💬 Comentário enviado!');
+                showToast('Comentário enviado!', '💬');
                 input.value = '';
-                // Recarregar feed para actualizar
                 await loadPosts();
             } catch (err) {
                 console.error(err);
-                showToast('❌ Erro ao comentar: ' + err.message);
+                showToast('Erro ao comentar: ' + err.message, '❌');
+            }
+        }
+
+        // ============================================================
+        //  SHARE POST
+        // ============================================================
+        function sharePost(postId) {
+            const url = window.location.href;
+            const shareText = `🗣️ Confere este post no DesabaChat!`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'DesabaChat',
+                    text: shareText,
+                    url: url,
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(`${shareText} ${url}`).then(() => {
+                    showToast('Link copiado! 📋', '📤');
+                }).catch(() => {
+                    showToast('Partilha: ' + url, '📤');
+                });
             }
         }
 
@@ -902,7 +1559,6 @@
             const filter = btn.dataset.filter;
             if (!filter) return;
 
-            // Update active
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -935,48 +1591,35 @@
         // ============================================================
         //  INICIAR
         // ============================================================
-        // Mostrar anon id se já existir
-        if (myAnonId) {
-            console.log('👤 Anon ID:', myAnonId);
-        }
+        getOrCreateAnonId();
+        updateHeader();
+
+        // Simular online count
+        setInterval(() => {
+            const count = Math.floor(Math.random() * 20) + 5;
+            document.getElementById('onlineCount').textContent = count;
+        }, 30000);
 
         loadPosts();
 
         // ============================================================
-        //  SCHEMA SQL (para correr no Supabase SQL Editor)
+        //  SCHEMA SQL ATUALIZADO (para correr no Supabase)
         // ============================================================
         /*
-        -- CRIAR TABELAS no Supabase
+        -- ADICIONAR COLUNAS À TABELA POSTS
+        ALTER TABLE posts ADD COLUMN IF NOT EXISTS anon_display TEXT;
+        ALTER TABLE posts ADD COLUMN IF NOT EXISTS anon_emoji TEXT DEFAULT '😊';
+        ALTER TABLE posts ADD COLUMN IF NOT EXISTS reactions JSONB DEFAULT '{"❤️":0,"😂":0,"😮":0,"😢":0,"😡":0}';
 
-        CREATE TABLE posts (
-          id BIGSERIAL PRIMARY KEY,
-          content TEXT NOT NULL,
-          category TEXT NOT NULL,
-          is_adult BOOLEAN DEFAULT false,
-          anon_id TEXT NOT NULL,
-          likes INT DEFAULT 0,
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        );
+        -- ADICIONAR COLUNAS À TABELA COMMENTS
+        ALTER TABLE comments ADD COLUMN IF NOT EXISTS anon_display TEXT;
+        ALTER TABLE comments ADD COLUMN IF NOT EXISTS anon_emoji TEXT DEFAULT '😊';
 
-        CREATE TABLE comments (
-          id BIGSERIAL PRIMARY KEY,
-          post_id BIGINT REFERENCES posts(id) ON DELETE CASCADE,
-          content TEXT NOT NULL,
-          anon_id TEXT NOT NULL,
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        );
-
-        -- Políticas RLS (opcional, mas recomendado)
-        -- Permitir leitura para todos
-        CREATE POLICY "Todos podem ler posts" ON posts FOR SELECT USING (true);
-        CREATE POLICY "Todos podem ler comments" ON comments FOR SELECT USING (true);
-
-        -- Permitir inserção para todos (anónimo)
-        CREATE POLICY "Todos podem inserir posts" ON posts FOR INSERT WITH CHECK (true);
-        CREATE POLICY "Todos podem inserir comments" ON comments FOR INSERT WITH CHECK (true);
-
-        -- Permitir update apenas nos likes (para todos)
-        CREATE POLICY "Todos podem atualizar likes" ON posts FOR UPDATE USING (true) WITH CHECK (true);
+        -- Atualizar dados existentes
+        UPDATE posts SET anon_display = anon_id WHERE anon_display IS NULL;
+        UPDATE comments SET anon_display = anon_id WHERE anon_display IS NULL;
+        UPDATE posts SET anon_emoji = '😊' WHERE anon_emoji IS NULL;
+        UPDATE comments SET anon_emoji = '😊' WHERE anon_emoji IS NULL;
         */
         console.log('🚀 DesabaChat carregado!');
     </script>
