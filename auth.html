@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Piripiri Chat - Autenticação</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--bg-primary);
+        }
+        
+        .auth-card {
+            background: var(--bg-secondary);
+            padding: 32px 24px;
+            border-radius: var(--radius-lg);
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .auth-logo img {
+            width: 64px;
+            height: 64px;
+        }
+        
+        .auth-logo h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 8px;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: var(--bg-tertiary);
+            padding: 4px;
+            border-radius: var(--radius);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+        
+        .auth-tab.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+        
+        .auth-tab:hover {
+            color: var(--primary);
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            outline: none;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .auth-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .social-auth {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .social-btn {
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            background: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .social-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-tertiary);
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle input {
+            padding-right: 40px;
+        }
+        
+        .password-toggle .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <img src="icons/logo.svg" alt="Piripiri Chat" style="width:64px;height:64px;">
+                <h1>Piripiri Chat</h1>
+                <p style="color:var(--text-secondary);font-size:0.9rem;">Desabafa em anónimo</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">Entrar</button>
+                <button class="auth-tab" onclick="switchTab('register')">Registar</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="auth-form active" id="loginForm">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="loginEmail" placeholder="exemplo@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Palavra-passe</label>
+                        <div class="password-toggle">
+                            <input type="password" id="loginPassword" placeholder="••••••••" required>
+                            <button type="button" class="toggle-btn" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    <a href="#" onclick="resetPassword()">Esqueci-me da palavra-passe</a>
+                </div>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="auth-form" id="registerForm">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nome de Utilizador</label>
+                        <input type="text" id="registerUsername" placeholder="Utilizador" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tag"></i> Nome a Mostrar</label>
+                        <input type="text" id="registerDisplayName" placeholder="O teu nome">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="registerEmail" placeholder="exemplo@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Palavra-passe</label>
+                        <div class="password-toggle">
+                            <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required>
+                            <button type="button" class="toggle-btn" onclick="togglePassword('registerPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn" id="registerBtn">
+                        <i class="fas fa-user-plus"></i> Criar Conta
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toastContainer"></div>
+    
+    <script>
+        let currentTab = 'login';
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+        
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const btn = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A entrar...';
+            
+            try {
+                await login(email, password);
+            } catch (error) {
+                // Erro já tratado no auth.js
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+            }
+        }
+        
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const displayName = document.getElementById('registerDisplayName').value || username;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (password.length < 6) {
+                showToast('A palavra-passe deve ter pelo menos 6 caracteres', 'error');
+                return;
+            }
+            
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A registar...';
+            
+            try {
+                await register(email, password, username, displayName);
+            } catch (error) {
+                // Erro já tratado no auth.js
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Criar Conta';
+            }
+        }
+        
+        async function resetPassword() {
+            const email = prompt('Introduz o teu email para recuperar a palavra-passe:');
+            if (email) {
+                await resetPassword(email);
+            }
+        }
+        
+        // Verificar se já está autenticado
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
