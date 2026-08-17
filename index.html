@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Piripiri Chat - Início</title>
+    
+    <!-- Meta Tags PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Arquivos CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Configurações e Módulos -->
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="notifications.js"></script>
+    <script src="feed.js"></script>
+</head>
+<body>
+    <!-- Header Global -->
+    <header class="header" id="mainHeader">
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <img src="icons/logo.svg" alt="Piripiri Chat" class="logo-img">
+                <span class="logo-text">Piripiri Chat</span>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema" id="themeBtn">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="icon-btn" onclick="window.location.href='notificacoes.html'" title="Notificações" id="notifBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notifBadge" style="display:none;">0</span>
+                </button>
+                <button class="icon-btn" onclick="window.location.href='perfil.html'" title="Perfil">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <div class="container main-content">
+        <!-- Banner de Boas-vindas -->
+        <div class="welcome-banner" id="welcomeBanner">
+            <div class="greeting" id="greetingText">🌶️ Bem-vindo ao Piripiri Chat</div>
+            <div class="subtitle">Desabafa, conta um segredo, espalha a fofoca... 100% anónimo</div>
+            <div class="stats-mini">
+                <span><strong id="totalPostsCount">0</strong> publicações</span>
+                <span><strong id="onlineCount">0</strong> online</span>
+                <span><strong id="followersCount">0</strong> seguidores</span>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="quick-actions">
+            <button class="action-btn primary" onclick="window.location.href='criar-post.html'">
+                <i class="fas fa-pen-fancy icon"></i>
+                <span class="label">Desabafar</span>
+            </button>
+            <button class="action-btn success" onclick="window.location.href='chat.html'">
+                <i class="fas fa-comment-dots icon"></i>
+                <span class="label">Mensagens</span>
+                <span class="badge" id="chatBadge">0</span>
+            </button>
+            <button class="action-btn warning" onclick="window.location.href='perfil.html'">
+                <i class="fas fa-user icon"></i>
+                <span class="label">Perfil</span>
+            </button>
+            <button class="action-btn danger" onclick="logout()">
+                <i class="fas fa-sign-out-alt icon"></i>
+                <span class="label">Sair</span>
+            </button>
+        </div>
+
+        <!-- Filtros do Feed -->
+        <div class="feed-filters" id="feedFilters">
+            <button class="filter-btn active" data-filter="tudo">
+                <i class="fas fa-list"></i> Tudo
+            </button>
+            <button class="filter-btn" data-filter="segredos">
+                <i class="fas fa-lock"></i> Segredos
+            </button>
+            <button class="filter-btn" data-filter="fofocas">
+                <i class="fas fa-comment"></i> Fofocas
+            </button>
+            <button class="filter-btn" data-filter="desabafos">
+                <i class="fas fa-heart"></i> Desabafos
+            </button>
+            <button class="filter-btn" data-filter="seguidos">
+                <i class="fas fa-users"></i> Seguidos
+            </button>
+        </div>
+
+        <!-- Feed de Publicações -->
+        <div id="feedContainer">
+            <div class="loading-state" id="loadingState">
+                <i class="fas fa-spinner spinner"></i>
+                <p>A carregar publicações...</p>
+            </div>
+        </div>
+
+        <!-- Carregar Mais -->
+        <div class="load-more" id="loadMoreBtn" style="display:none;" onclick="loadMorePosts()">
+            <i class="fas fa-arrow-down"></i> Carregar mais publicações
+        </div>
+    </div>
+
+    <!-- Navegação Inferior -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="active" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </button>
+        <button onclick="window.location.href='feed.html'">
+            <i class="fas fa-newspaper"></i>
+            <span>Feed</span>
+        </button>
+        <button onclick="window.location.href='criar-post.html'" class="nav-publish">
+            <i class="fas fa-plus-circle"></i>
+            <span>Publicar</span>
+        </button>
+        <button onclick="window.location.href='chat.html'">
+            <i class="fas fa-envelope"></i>
+            <span>Mensagens</span>
+            <span class="notification-badge" id="chatBadgeNav" style="display:none;">0</span>
+        </button>
+        <button onclick="window.location.href='perfil.html'">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadFeed();
+            setupRealtime();
+            updateNotificationBadge();
+            
+            // Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(() => console.log('✅ Service Worker registado'))
+                    .catch(err => console.log('❌ Service Worker erro:', err));
+            }
+        });
+    </script>
+</body>
+</html>
