@@ -3603,6 +3603,16 @@
 
         // Iniciar
         init();
+        // No final do script principal
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(registration => {
+      console.log('✅ Service Worker registrado!');
+    })
+    .catch(error => {
+      console.error('❌ Erro no Service Worker:', error);
+    });
+}
     </script>
 
 </body>
