@@ -1,0 +1,19 @@
+{
+  "name": "desabachat",
+  "version": "3.0.0",
+  "description": "Plataforma de desabafos anónimos",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "npm run generate-icons && npm run minify",
+    "generate-icons": "node generate-icons.js",
+    "minify": "npm run minify-css && npm run minify-js",
+    "minify-css": "npx clean-css-cli -o styles.min.css styles.css",
+    "minify-js": "npx terser --compress --mangle -- output script.min.js -- script.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.32.0",
+    "clean-css-cli": "^5.6.0",
+    "terser": "^5.16.0"
+  }
+}
