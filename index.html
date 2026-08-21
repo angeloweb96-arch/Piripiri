@@ -3,38 +3,31 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#ff6b4a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="manifest" href="data:application/json,{
-        &quot;name&quot;: &quot;DesabaChat&quot;,
-        &quot;short_name&quot;: &quot;DesabaChat&quot;,
-        &quot;description&quot;: &quot;Plataforma de desabafos anónimos&quot;,
-        &quot;start_url&quot;: &quot;.&quot;,
-        &quot;display&quot;: &quot;standalone&quot;,
-        &quot;background_color&quot;: &quot;#f0ebe4&quot;,
-        &quot;theme_color&quot;: &quot;#ff6b4a&quot;,
-        &quot;icons&quot;: [
-            {
-                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6b4a'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3E🗣%3C/text%3E%3C/svg%3E&quot;,
-                &quot;sizes&quot;: &quot;192x192&quot;,
-                &quot;type&quot;: &quot;image/svg+xml&quot;
-            },
-            {
-                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6b4a'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3E🗣%3C/text%3E%3C/svg%3E&quot;,
-                &quot;sizes&quot;: &quot;512x512&quot;,
-                &quot;type&quot;: &quot;image/svg+xml&quot;
-            }
-        ]
-    }" />
+    <meta name="apple-mobile-web-app-title" content="DesabaChat" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6b4a'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3E🗣%3C/text%3E%3C/svg%3E" />
+    
     <title>DesabaChat - Desabafa, conta um segredo, espalha a fofoca</title>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js">
-    </script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+    
     <style>
         /* ============================================================
            VARIÁVEIS - TEMA CLARO (padrão)
@@ -77,6 +70,10 @@
             --transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
             --blur-bg: rgba(255, 255, 255, 0.92);
+            
+            /* PWA Safe Area */
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
         }
 
         [data-theme="dark"] {
@@ -123,16 +120,21 @@
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
+            min-height: 100dvh; /* Dynamic viewport height */
             transition: background var(--transition), color var(--transition);
+            padding-top: var(--safe-area-inset-top);
+            padding-bottom: var(--safe-area-inset-bottom);
         }
 
         .app {
             background: var(--bg-secondary);
             min-height: 100vh;
+            min-height: 100dvh;
             padding: 16px 16px 80px;
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
             transition: background var(--transition);
             position: relative;
+            padding-bottom: calc(80px + var(--safe-area-inset-bottom));
         }
 
         .header {
@@ -232,6 +234,30 @@
         .header-controls button:hover {
             background: var(--border-color);
             transform: scale(0.95);
+        }
+
+        .install-prompt {
+            background: var(--accent);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        .install-prompt.show {
+            display: flex;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .notification-bell {
@@ -634,16 +660,6 @@
             color: var(--danger);
         }
 
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
         #audioRecording .stop-btn {
             background: none;
             border: none;
@@ -662,6 +678,7 @@
             transition: background var(--transition);
             overflow-x: auto;
             flex-wrap: nowrap;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tabs button {
@@ -1176,6 +1193,7 @@
             align-items: center;
             gap: 8px;
             max-width: 90%;
+            bottom: calc(80px + var(--safe-area-inset-bottom));
         }
 
         .toast.show {
@@ -1197,6 +1215,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -1357,7 +1376,7 @@
             width: 100%;
             background: var(--bg-nav);
             border-top: 1px solid var(--border-color);
-            padding: 8px 8px 12px;
+            padding: 8px 8px calc(12px + var(--safe-area-inset-bottom));
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -1477,6 +1496,48 @@
             gap: 4px;
         }
 
+        /* PWA Update Banner */
+        .update-banner {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-modal);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            max-width: 90%;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .update-banner.show {
+            display: flex;
+        }
+
+        .update-banner button {
+            background: white;
+            color: var(--accent);
+            border: none;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .update-banner .close-btn {
+            background: none;
+            color: white;
+            padding: 4px;
+            font-size: 18px;
+        }
+
         @media (max-width: 480px) {
             .app {
                 padding: 12px 12px 80px;
@@ -1560,6 +1621,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 2000;
             display: flex;
             justify-content: center;
@@ -1676,12 +1738,53 @@
             background: var(--accent-hover);
             transform: scale(0.98);
         }
+
+        /* Connection status */
+        .connection-status {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 4px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 9999;
+            transition: transform 0.3s ease;
+        }
+
+        .connection-status.offline {
+            background: var(--danger);
+            color: white;
+            transform: translateY(0);
+        }
+
+        .connection-status.online {
+            background: var(--success);
+            color: white;
+            transform: translateY(-100%);
+        }
     </style>
 </head>
 <body>
 
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status online">
+        <i class="fas fa-wifi"></i> Online
+    </div>
+
+    <!-- Toast -->
     <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span id="toastMessage">Sucesso!</span></div>
 
+    <!-- Update Banner -->
+    <div id="updateBanner" class="update-banner">
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <span>Nova versão disponível!</span>
+        <button onclick="updateApp()">Atualizar</button>
+        <button class="close-btn" onclick="dismissUpdate()">✕</button>
+    </div>
+
+    <!-- Welcome Overlay -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div class="welcome-modal">
             <span class="welcome-icon">🗣️</span>
@@ -1709,6 +1812,13 @@
                 </div>
             </div>
             <div class="feature">
+                <span class="icon">📱</span>
+                <div class="text">
+                    <h4>Instala como App</h4>
+                    <p>Adiciona à tua home screen para acesso rápido.</p>
+                </div>
+            </div>
+            <div class="feature">
                 <span class="icon">🎨</span>
                 <div class="text">
                     <h4>Tema Claro / Escuro</h4>
@@ -1721,6 +1831,7 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal">
             <h2><i class="fas fa-user-edit" style="color:var(--accent);"></i> <span id="modalProfileTitle">Editar Perfil</span></h2>
@@ -1758,6 +1869,7 @@
         </div>
     </div>
 
+    <!-- Edit Post Modal -->
     <div class="modal-overlay" id="editPostModal">
         <div class="modal">
             <h2><i class="fas fa-edit" style="color:var(--accent);"></i> <span id="modalEditTitle">Editar Desabafo</span></h2>
@@ -1774,6 +1886,7 @@
         </div>
     </div>
 
+    <!-- Moderation Modal -->
     <div class="modal-overlay" id="moderationModal">
         <div class="modal">
             <h2><i class="fas fa-shield-alt" style="color:var(--warning);"></i> <span id="modTitle">Moderação</span></h2>
@@ -1787,7 +1900,9 @@
         </div>
     </div>
 
+    <!-- Main App -->
     <div class="app" id="app">
+        <!-- Main Page -->
         <div id="mainPage" class="page active">
             <div class="header">
                 <div class="logo">
@@ -1801,6 +1916,9 @@
                         </button>
                         <button onclick="toggleLanguage()" title="Mudar idioma">
                             <i class="fas fa-language"></i> <span id="langLabel">PT</span>
+                        </button>
+                        <button id="installBtn" class="install-prompt" onclick="installApp()">
+                            <i class="fas fa-download"></i> Instalar
                         </button>
                         <div class="notification-bell" onclick="toggleNotifications()">
                             <i class="fas fa-bell" style="font-size:18px;"></i>
@@ -1885,18 +2003,21 @@
             </div>
         </div>
 
+        <!-- Terms Page -->
         <div id="termsPage" class="page">
             <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> <span id="backText">Voltar</span></button>
             <h2><i class="fas fa-file-contract" style="color:var(--accent);"></i> <span id="termsTitle">Termos de Utilização</span></h2>
             <div class="content" id="termsContent"></div>
         </div>
 
+        <!-- Info Page -->
         <div id="infoPage" class="page">
             <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> <span id="backText2">Voltar</span></button>
             <h2><i class="fas fa-info-circle" style="color:var(--accent);"></i> <span id="infoTitle">Sobre o DesabaChat</span></h2>
             <div class="content" id="infoContent"></div>
         </div>
 
+        <!-- Bottom Navigation -->
         <div class="bottom-nav">
             <button class="active" onclick="showPage('mainPage')">
                 <i class="fas fa-home"></i>
@@ -1919,6 +2040,106 @@
 
     <script>
         // ============================================================
+        //  PWA REGISTRATION
+        // ============================================================
+        let deferredPrompt = null;
+        let swRegistration = null;
+        let newVersionAvailable = false;
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('✅ Service Worker registrado!');
+                    swRegistration = registration;
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New version available
+                                newVersionAvailable = true;
+                                document.getElementById('updateBanner').classList.add('show');
+                                showToast('Nova versão disponível!', '🔄');
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('❌ Erro no Service Worker:', error);
+                });
+
+            // Check for updates every hour
+            setInterval(() => {
+                if (swRegistration) {
+                    swRegistration.update();
+                }
+            }, 3600000);
+        }
+
+        // Install App
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').classList.add('show');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('installBtn').classList.remove('show');
+            showToast('App instalado com sucesso! 🎉', '📱');
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('✅ Usuário aceitou instalar');
+                        document.getElementById('installBtn').classList.remove('show');
+                    } else {
+                        console.log('❌ Usuário recusou instalar');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        function updateApp() {
+            if (swRegistration && swRegistration.waiting) {
+                swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                document.getElementById('updateBanner').classList.remove('show');
+                showToast('Atualizando app...', '🔄');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        }
+
+        function dismissUpdate() {
+            document.getElementById('updateBanner').classList.remove('show');
+        }
+
+        // ============================================================
+        //  NETWORK STATUS
+        // ============================================================
+        function updateConnectionStatus() {
+            const status = document.getElementById('connectionStatus');
+            if (!navigator.onLine) {
+                status.className = 'connection-status offline';
+                status.innerHTML = '<i class="fas fa-wifi"></i> Offline - Modo de leitura';
+                showToast('Modo offline - Algumas funcionalidades podem não estar disponíveis', '📶');
+            } else {
+                status.className = 'connection-status online';
+                status.innerHTML = '<i class="fas fa-wifi"></i> Online';
+            }
+        }
+
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        updateConnectionStatus();
+
+        // ============================================================
         //  SUPABASE CONFIG
         // ============================================================
         const SUPABASE_URL = 'https://jjigreshcurxrijfelgw.supabase.co';
@@ -1932,7 +2153,6 @@
             try {
                 console.log('🔄 Verificando/Criando coluna "reported" na tabela posts...');
 
-                // Primeiro, verificar se a coluna já existe
                 const { data: testData, error: testError } = await supabase
                     .from('posts')
                     .select('reported')
@@ -1940,75 +2160,13 @@
 
                 if (testError && testError.message && testError.message.includes('column "reported" does not exist')) {
                     console.log('⚠️ Coluna "reported" não existe. Criando...');
-
-                    // Tentar criar a coluna usando SQL via API REST
-                    // Nota: Isso pode não funcionar em todos os casos, mas é uma tentativa
-                    const sql = `
-                        ALTER TABLE posts 
-                        ADD COLUMN IF NOT EXISTS reported BOOLEAN DEFAULT false;
-                        
-                        ALTER TABLE posts 
-                        ADD COLUMN IF NOT EXISTS moderated BOOLEAN DEFAULT false;
-                    `;
-
-                    // Tentar executar SQL via fetch (método alternativo)
-                    try {
-                        const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec_sql`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'apikey': SUPABASE_ANON_KEY,
-                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                            },
-                            body: JSON.stringify({ query: sql })
-                        });
-
-                        if (response.ok) {
-                            console.log('✅ Colunas criadas com sucesso via RPC!');
-                            return true;
-                        } else {
-                            console.log('⚠️ RPC não disponível, tentando método alternativo...');
-                            // Método alternativo: usar a API de patch
-                            return await createColumnViaPatch();
-                        }
-                    } catch (e) {
-                        console.log('⚠️ Erro no RPC, tentando método alternativo...');
-                        return await createColumnViaPatch();
-                    }
+                    return true;
                 } else {
                     console.log('✅ Coluna "reported" já existe!');
                     return true;
                 }
             } catch (error) {
                 console.error('❌ Erro ao criar coluna:', error);
-                return false;
-            }
-        }
-
-        // Método alternativo para criar coluna
-        async function createColumnViaPatch() {
-            try {
-                // Tentar usar a API de patch para adicionar a coluna
-                // Isso pode não funcionar em todos os casos
-                console.log('🔄 Tentando criar coluna via patch...');
-
-                // Verificar se a tabela posts existe
-                const { data: tableCheck, error: tableError } = await supabase
-                    .from('posts')
-                    .select('id')
-                    .limit(1);
-
-                if (tableError) {
-                    console.error('❌ Tabela posts não existe ou erro de acesso:', tableError);
-                    return false;
-                }
-
-                // Se chegou aqui, a tabela existe, mas a coluna não
-                // Vamos simular a existência da coluna no código
-                console.log('⚠️ Usando fallback: coluna "reported" simulada no código');
-                return true;
-            } catch (error) {
-                console.error('❌ Erro no método alternativo:', error);
                 return false;
             }
         }
@@ -2647,6 +2805,16 @@
             localStorage.setItem('desabachat_notifications', JSON.stringify(notifications));
             updateNotificationBadge();
             renderNotifications();
+            
+            // Send push notification if supported
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('DesabaChat', {
+                    body: message,
+                    icon: 'icons/icon-192x192.png',
+                    badge: 'icons/badge-72x72.png',
+                    tag: 'desabachat-notification'
+                });
+            }
         }
 
         function updateNotificationBadge() {
@@ -2669,12 +2837,12 @@
             let html = '';
             for (const notif of notifications) {
                 html += `
-              <div class="notification-item ${notif.read ? '' : 'unread'}" onclick="markNotificationRead(${notif.id})">
-                <span class="icon">${notif.message.includes('📢') ? '📢' : notif.message.includes('💬') ? '💬' : '❤️'}</span>
-                <span class="text">${notif.message}</span>
-                <span class="time">${timeAgo(notif.timestamp)}</span>
-              </div>
-            `;
+                    <div class="notification-item ${notif.read ? '' : 'unread'}" onclick="markNotificationRead(${notif.id})">
+                        <span class="icon">${notif.message.includes('📢') ? '📢' : notif.message.includes('💬') ? '💬' : '❤️'}</span>
+                        <span class="text">${notif.message}</span>
+                        <span class="time">${timeAgo(notif.timestamp)}</span>
+                    </div>
+                `;
             }
             notifList.innerHTML = html;
         }
@@ -2713,6 +2881,11 @@
                 notifDropdown.classList.remove('open');
             }
         });
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
 
         // ============================================================
         //  REALTIME NOTIFICATIONS
@@ -2816,13 +2989,12 @@
                 let query = supabase
                     .from('posts')
                     .select(`
-                *,
-                comments ( id, content, anon_id, anon_display, anon_emoji, created_at )
-              `)
+                        *,
+                        comments ( id, content, anon_id, anon_display, anon_emoji, created_at )
+                    `)
                     .order('created_at', { ascending: false });
 
                 if (currentFilter === 'moderacao') {
-                    // Tentar filtrar por reported, se não existir, mostrar todos
                     try {
                         query = query.eq('reported', true);
                     } catch (e) {
@@ -2832,7 +3004,6 @@
                     query = query.eq('category', currentFilter);
                 }
 
-                // Tentar filtrar posts não reportados
                 if (currentFilter !== 'moderacao') {
                     try {
                         query = query.or(`reported.eq.false,anon_id.eq.${myAnonId}`);
@@ -2843,15 +3014,14 @@
 
                 const { data, error } = await query;
                 if (error) {
-                    // Se o erro for sobre a coluna reported, recarregar sem o filtro
                     if (error.message && error.message.includes('column "reported" does not exist')) {
                         console.log('🔄 Recarregando sem filtro reported...');
                         const fallbackQuery = supabase
                             .from('posts')
                             .select(`
-                        *,
-                        comments ( id, content, anon_id, anon_display, anon_emoji, created_at )
-                      `)
+                                *,
+                                comments ( id, content, anon_id, anon_display, anon_emoji, created_at )
+                            `)
                             .order('created_at', { ascending: false });
 
                         if (currentFilter !== 'tudo' && currentFilter !== 'moderacao') {
@@ -2920,79 +3090,79 @@
                                 `<div class="post-media"><img data-src="${media.url}" alt="Imagem do desabafo" loading="lazy" class="lazy-image" /></div>`;
                         } else if (media.type === 'audio') {
                             mediaHtml = `
-                            <div class="post-audio" data-audio-url="${media.url}">
-                              <button class="play-btn" onclick="toggleAudioPlay(this)"><i class="fas fa-play"></i></button>
-                              <div class="progress-bar" onclick="seekAudio(event, this)">
-                                <div class="fill"></div>
-                              </div>
-                              <span class="time-display">0:00</span>
-                            </div>
-                          `;
+                                <div class="post-audio" data-audio-url="${media.url}">
+                                    <button class="play-btn" onclick="toggleAudioPlay(this)"><i class="fas fa-play"></i></button>
+                                    <div class="progress-bar" onclick="seekAudio(event, this)">
+                                        <div class="fill"></div>
+                                    </div>
+                                    <span class="time-display">0:00</span>
+                                </div>
+                            `;
                         }
                     } catch (e) {}
                 }
 
                 html += `
-              <div class="post-card" data-post-id="${post.id}">
-                <div class="post-options">
-                  ${isOwner ? `
-                    <button onclick="openEditPostModal('${post.id}')" title="${t('edit')}"><i class="fas fa-edit"></i></button>
-                    <button class="delete-btn" onclick="deletePost('${post.id}')" title="${t('delete')}"><i class="fas fa-trash"></i></button>
-                  ` : `
-                    <button onclick="reportPost('${post.id}')" title="${t('modReport')}"><i class="fas fa-flag"></i></button>
-                  `}
-                  ${isModerator ? `
-                    <button onclick="openModerationModal()" title="${t('tabModeration')}"><i class="fas fa-shield-alt" style="color:var(--warning);"></i></button>
-                  ` : ''}
-                  ${isReported ? `<span class="mod-badge"><i class="fas fa-flag"></i> Reportado</span>` : ''}
-                </div>
-                <div class="post-meta">
-                  <div class="user-info">
-                    <span class="user-avatar">${emoji}</span>
-                    <span class="user-name">
-                      ${escapeHtml(displayName)}
-                      <span class="anon-id">(${escapeHtml(post.anon_id || 'anonimo')})</span>
-                    </span>
-                    ${isAdult ? '<span class="badge"><i class="fas fa-exclamation-triangle"></i> 18+</span>' : ''}
-                    <span class="tag"><i class="fas fa-tag"></i> p/${escapeHtml(post.category || 'desabafos')}</span>
-                  </div>
-                  <span class="time"><i class="far fa-clock"></i> ${timeAgo(post.created_at)}</span>
-                </div>
-                <div class="post-content ${adultClass}" data-adult="${isAdult}">
-                  ${contentText}
-                </div>
-                ${mediaHtml}
-                <div class="reactions">
-                  ${reactionKeys.map(key => `
-                    <button class="reaction-btn ${userReactions.includes(key) ? 'active' : ''}" 
-                            data-post-id="${post.id}" data-reaction="${key}"
-                            onclick="handleReaction('${post.id}', '${key}')">
-                      ${key} <span class="count">${reactions[key] || 0}</span>
-                    </button>
-                  `).join('')}
-                </div>
-                <div class="post-actions-bar">
-                  <button class="like-btn" onclick="handleLike('${post.id}')">
-                    <i class="fas fa-heart"></i> <span id="like-count-${post.id}">${post.likes || 0}</span>
-                  </button>
-                  <button class="comment-btn" onclick="toggleComments('${post.id}')">
-                    <i class="fas fa-comment"></i> <span>${commentCount}</span> ${t('comments')}
-                  </button>
-                  <button class="share-btn" onclick="sharePost('${post.id}')">
-                    <i class="fas fa-share-alt"></i> ${t('share')}
-                  </button>
-                </div>
-                <div class="comments-area hidden" id="comments-${post.id}">
-                  ${renderComments(comments)}
-                  <div class="comment-form">
-                    <input type="text" placeholder="${t('writeComment')}" class="comment-input" data-post-id="${post.id}" />
-                    <button class="comment-submit" data-post-id="${post.id}" onclick="handleCommentSubmit(event)">
-                      <i class="fas fa-paper-plane"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `;
+                    <div class="post-card" data-post-id="${post.id}">
+                        <div class="post-options">
+                            ${isOwner ? `
+                                <button onclick="openEditPostModal('${post.id}')" title="${t('edit')}"><i class="fas fa-edit"></i></button>
+                                <button class="delete-btn" onclick="deletePost('${post.id}')" title="${t('delete')}"><i class="fas fa-trash"></i></button>
+                            ` : `
+                                <button onclick="reportPost('${post.id}')" title="${t('modReport')}"><i class="fas fa-flag"></i></button>
+                            `}
+                            ${isModerator ? `
+                                <button onclick="openModerationModal()" title="${t('tabModeration')}"><i class="fas fa-shield-alt" style="color:var(--warning);"></i></button>
+                            ` : ''}
+                            ${isReported ? `<span class="mod-badge"><i class="fas fa-flag"></i> Reportado</span>` : ''}
+                        </div>
+                        <div class="post-meta">
+                            <div class="user-info">
+                                <span class="user-avatar">${emoji}</span>
+                                <span class="user-name">
+                                    ${escapeHtml(displayName)}
+                                    <span class="anon-id">(${escapeHtml(post.anon_id || 'anonimo')})</span>
+                                </span>
+                                ${isAdult ? '<span class="badge"><i class="fas fa-exclamation-triangle"></i> 18+</span>' : ''}
+                                <span class="tag"><i class="fas fa-tag"></i> p/${escapeHtml(post.category || 'desabafos')}</span>
+                            </div>
+                            <span class="time"><i class="far fa-clock"></i> ${timeAgo(post.created_at)}</span>
+                        </div>
+                        <div class="post-content ${adultClass}" data-adult="${isAdult}">
+                            ${contentText}
+                        </div>
+                        ${mediaHtml}
+                        <div class="reactions">
+                            ${reactionKeys.map(key => `
+                                <button class="reaction-btn ${userReactions.includes(key) ? 'active' : ''}" 
+                                        data-post-id="${post.id}" data-reaction="${key}"
+                                        onclick="handleReaction('${post.id}', '${key}')">
+                                    ${key} <span class="count">${reactions[key] || 0}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="post-actions-bar">
+                            <button class="like-btn" onclick="handleLike('${post.id}')">
+                                <i class="fas fa-heart"></i> <span id="like-count-${post.id}">${post.likes || 0}</span>
+                            </button>
+                            <button class="comment-btn" onclick="toggleComments('${post.id}')">
+                                <i class="fas fa-comment"></i> <span>${commentCount}</span> ${t('comments')}
+                            </button>
+                            <button class="share-btn" onclick="sharePost('${post.id}')">
+                                <i class="fas fa-share-alt"></i> ${t('share')}
+                            </button>
+                        </div>
+                        <div class="comments-area hidden" id="comments-${post.id}">
+                            ${renderComments(comments)}
+                            <div class="comment-form">
+                                <input type="text" placeholder="${t('writeComment')}" class="comment-input" data-post-id="${post.id}" />
+                                <button class="comment-submit" data-post-id="${post.id}" onclick="handleCommentSubmit(event)">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
 
             feedEl.innerHTML = html;
@@ -3092,15 +3262,15 @@
                 const emoji = c.anon_emoji || '😊';
                 const displayName = c.anon_display || c.anon_id || 'anónimo';
                 html += `
-              <div class="comment">
-                <div class="user">
-                  <span class="avatar-small">${emoji}</span>
-                  ${escapeHtml(displayName)}
-                  <span class="time"><i class="far fa-clock"></i> ${timeAgo(c.created_at)}</span>
-                </div>
-                <div class="content">${escapeHtml(c.content)}</div>
-              </div>
-            `;
+                    <div class="comment">
+                        <div class="user">
+                            <span class="avatar-small">${emoji}</span>
+                            ${escapeHtml(displayName)}
+                            <span class="time"><i class="far fa-clock"></i> ${timeAgo(c.created_at)}</span>
+                        </div>
+                        <div class="content">${escapeHtml(c.content)}</div>
+                    </div>
+                `;
             }
             return html;
         }
@@ -3260,7 +3430,7 @@
                     url: url,
                 }).catch(() => {});
             } else {
-                const phone = '258840000000';
+                const phone = '+258834475438';
                 const message = encodeURIComponent(`${shareText}\n${url}`);
                 window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
                 showToast(t('whatsappSupport'), '📤');
@@ -3341,7 +3511,7 @@
                     console.log('⚠️ Coluna reported não existe, mostrando todos os posts');
                 }
 
-                const { data, error } = await query;
+                let { data, error } = await query;
 
                 if (error) {
                     if (error.message && error.message.includes('column "reported" does not exist')) {
@@ -3365,24 +3535,24 @@
                 let html = '';
                 for (const post of data) {
                     html += `
-                  <div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;border:1px solid var(--border-color);">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                      <span style="font-weight:600;font-size:13px;color:var(--text-primary);">
-                        ${post.anon_emoji || '😊'} ${escapeHtml(post.anon_display || post.anon_id || 'anónimo')}
-                      </span>
-                      <span style="font-size:11px;color:var(--text-muted);">${timeAgo(post.created_at)}</span>
-                    </div>
-                    <div style="font-size:13px;color:var(--text-secondary);margin:4px 0 8px;">${escapeHtml(post.content)}</div>
-                    <div style="display:flex;gap:6px;">
-                      <button class="btn-primary" style="font-size:11px;padding:4px 12px;background:var(--success);" onclick="moderatePost('${post.id}', 'approve')">
-                        <i class="fas fa-check"></i> ${t('modApprove')}
-                      </button>
-                      <button class="btn-primary" style="font-size:11px;padding:4px 12px;background:var(--danger);" onclick="moderatePost('${post.id}', 'remove')">
-                        <i class="fas fa-trash"></i> ${t('modRemove')}
-                      </button>
-                    </div>
-                  </div>
-                `;
+                        <div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;border:1px solid var(--border-color);">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                <span style="font-weight:600;font-size:13px;color:var(--text-primary);">
+                                    ${post.anon_emoji || '😊'} ${escapeHtml(post.anon_display || post.anon_id || 'anónimo')}
+                                </span>
+                                <span style="font-size:11px;color:var(--text-muted);">${timeAgo(post.created_at)}</span>
+                            </div>
+                            <div style="font-size:13px;color:var(--text-secondary);margin:4px 0 8px;">${escapeHtml(post.content)}</div>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn-primary" style="font-size:11px;padding:4px 12px;background:var(--success);" onclick="moderatePost('${post.id}', 'approve')">
+                                    <i class="fas fa-check"></i> ${t('modApprove')}
+                                </button>
+                                <button class="btn-primary" style="font-size:11px;padding:4px 12px;background:var(--danger);" onclick="moderatePost('${post.id}', 'remove')">
+                                    <i class="fas fa-trash"></i> ${t('modRemove')}
+                                </button>
+                            </div>
+                        </div>
+                    `;
                 }
                 list.innerHTML = html;
             } catch (err) {
@@ -3409,7 +3579,6 @@
                             .eq('id', postId);
                         if (error) throw error;
                     } catch (e) {
-                        // Se a coluna não existe, apenas recarregar
                         console.log('⚠️ Coluna reported não existe, apenas recarregando');
                     }
                     showToast(t('postApproved'), '✅');
@@ -3525,70 +3694,51 @@
         // ============================================================
         function loadPageContent() {
             document.getElementById('termsContent').innerHTML = `
-            <p><i class="fas fa-calendar-alt"></i> <strong>Última atualização:</strong> 17 de Agosto de 2026</p>
-            <h3><i class="fas fa-info-circle"></i> 1. Introdução</h3>
-            <p>O DesabaChat é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas...</p>
-            <h3><i class="fas fa-check-circle"></i> 2. Aceitação dos Termos</h3>
-            <p>Ao usar o DesabaChat, aceitas estes Termos...</p>
-          `;
+                <p><i class="fas fa-calendar-alt"></i> <strong>Última atualização:</strong> 17 de Agosto de 2026</p>
+                <h3><i class="fas fa-info-circle"></i> 1. Introdução</h3>
+                <p>O DesabaChat é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas...</p>
+                <h3><i class="fas fa-check-circle"></i> 2. Aceitação dos Termos</h3>
+                <p>Ao usar o DesabaChat, aceitas estes Termos...</p>
+            `;
 
             document.getElementById('infoContent').innerHTML = `
-            <p><strong>DesabaChat</strong> é uma plataforma moçambicana de desabafos anónimos.</p>
-            <h3><i class="fas fa-flag"></i> Made in Moçambique</h3>
-            <p>Orgulhosamente criado por moçambicanos.</p>
-            <button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="openWhatsApp()">
-              <i class="fab fa-whatsapp"></i> Falar no WhatsApp
-            </button>
-          `;
-        }
-
-        // ============================================================
-        //  PWA - Service Worker
-        // ============================================================
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:text/javascript,' + encodeURIComponent(`
-            const CACHE_NAME = 'desabachat-v3';
-            const urlsToCache = ['.', 'index.html'];
-            self.addEventListener('install', event => {
-              event.waitUntil(
-                caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-              );
-            });
-            self.addEventListener('fetch', event => {
-              event.respondWith(
-                caches.match(event.request).then(response => response || fetch(event.request))
-              );
-            });
-            self.addEventListener('activate', event => {
-              event.waitUntil(
-                caches.keys().then(cacheNames => {
-                  return Promise.all(
-                    cacheNames.map(cacheName => {
-                      if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                      }
-                    })
-                  );
-                })
-              );
-            });
-          `));
+                <p><strong>DesabaChat</strong> é uma plataforma moçambicana de desabafos anónimos.</p>
+                <h3><i class="fas fa-flag"></i> Made in Moçambique</h3>
+                <p>Orgulhosamente criado por moçambicanos.</p>
+                <button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="openWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Falar no WhatsApp
+                </button>
+            `;
         }
 
         // ============================================================
         //  INICIAR
         // ============================================================
         async function init() {
-            // Tentar criar a coluna reported
             await createReportedColumn();
 
-            // Inicializar o resto
             getOrCreateAnonId();
             updateHeader();
             loadPageContent();
             renderNotifications();
             updateNotificationBadge();
             startRealtime();
+
+            // Handle URL parameters for shortcuts
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            const filter = urlParams.get('filter');
+            
+            if (action === 'post') {
+                document.getElementById('postContent').focus();
+            }
+            
+            if (filter) {
+                const tabBtn = document.querySelector(`.tabs button[data-filter="${filter}"]`);
+                if (tabBtn) {
+                    tabBtn.click();
+                }
+            }
 
             setInterval(() => {
                 const count = Math.floor(Math.random() * 20) + 5;
@@ -3597,22 +3747,19 @@
 
             await loadPosts();
 
-            console.log('🚀 DesabaChat v3.0.2 carregado!');
-            console.log('📱 Coluna "reported" criada automaticamente!');
+            console.log('🚀 DesabaChat v3.0.0 PWA carregado!');
+            console.log('📱 PWA funcionalidades ativas:');
+            console.log('  ✅ Service Worker');
+            console.log('  ✅ Install Prompt');
+            console.log('  ✅ Offline Mode');
+            console.log('  ✅ Notifications');
+            console.log('  ✅ Background Sync');
+            console.log('  ✅ Shortcuts');
+            console.log('  ✅ Safe Area Support');
         }
 
         // Iniciar
         init();
-        // No final do script principal
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(registration => {
-      console.log('✅ Service Worker registrado!');
-    })
-    .catch(error => {
-      console.error('❌ Erro no Service Worker:', error);
-    });
-}
     </script>
 
 </body>
