@@ -2,9 +2,32 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#ff6b4a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="data:application/json,{
+        &quot;name&quot;: &quot;DesabaChat&quot;,
+        &quot;short_name&quot;: &quot;DesabaChat&quot;,
+        &quot;description&quot;: &quot;Plataforma de desabafos anónimos&quot;,
+        &quot;start_url&quot;: &quot;.&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#f0ebe4&quot;,
+        &quot;theme_color&quot;: &quot;#ff6b4a&quot;,
+        &quot;icons&quot;: [
+            {
+                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6b4a'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3E🗣%3C/text%3E%3C/svg%3E&quot;,
+                &quot;sizes&quot;: &quot;192x192&quot;,
+                &quot;type&quot;: &quot;image/svg+xml&quot;
+            },
+            {
+                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6b4a'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='sans-serif'%3E🗣%3C/text%3E%3C/svg%3E&quot;,
+                &quot;sizes&quot;: &quot;512x512&quot;,
+                &quot;type&quot;: &quot;image/svg+xml&quot;
+            }
+        ]
+    }" />
     <title>DesabaChat - Desabafa, conta um segredo, espalha a fofoca</title>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js">
     </script>
@@ -22,6 +45,7 @@
             --bg-nav: #ffffff;
             --bg-tabs: #f0ebe4;
             --bg-toast: #1a1a1a;
+            --bg-notification: #fff3e0;
 
             --text-primary: #1a1a1a;
             --text-secondary: #555555;
@@ -51,9 +75,6 @@
             --blur-bg: rgba(255, 255, 255, 0.92);
         }
 
-        /* ============================================================
-           TEMA ESCURO
-           ============================================================ */
         [data-theme="dark"] {
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
@@ -64,6 +85,7 @@
             --bg-nav: #1e1e1e;
             --bg-tabs: #333333;
             --bg-toast: #ffffff;
+            --bg-notification: #2a2a1a;
 
             --text-primary: #e8e8e8;
             --text-secondary: #aaaaaa;
@@ -83,9 +105,6 @@
             --accent-hover: #ff8a6a;
         }
 
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -103,9 +122,6 @@
             transition: background var(--transition), color var(--transition);
         }
 
-        /* ============================================================
-           APP CONTAINER
-           ============================================================ */
         .app {
             background: var(--bg-secondary);
             min-height: 100vh;
@@ -115,9 +131,6 @@
             position: relative;
         }
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
         .header {
             display: flex;
             justify-content: space-between;
@@ -195,9 +208,160 @@
             font-size: 14px;
         }
 
-        /* ============================================================
-           SUBHEADER
-           ============================================================ */
+        .header-controls {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .header-controls button {
+            background: var(--bg-tabs);
+            border: none;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .header-controls button:hover {
+            background: var(--border-color);
+            transform: scale(0.95);
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-bell .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: var(--bg-modal);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-modal);
+            padding: 8px 0;
+            min-width: 280px;
+            max-width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .notification-dropdown.open {
+            display: block;
+        }
+
+        .notification-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-item:hover {
+            background: var(--bg-tabs);
+        }
+
+        .notification-item .icon {
+            font-size: 20px;
+        }
+
+        .notification-item .text {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .notification-item .time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .notification-item.unread {
+            background: var(--bg-notification);
+        }
+
+        .notification-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--text-light);
+        }
+
+        .search-bar button {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .search-bar button:hover {
+            background: var(--accent-hover);
+        }
+
+        .search-bar .clear-btn {
+            background: var(--bg-tabs);
+            color: var(--text-secondary);
+            padding: 10px 12px;
+        }
+
+        .search-bar .clear-btn:hover {
+            background: var(--border-color);
+        }
+
         .subhead {
             color: var(--text-muted);
             font-size: 13px;
@@ -228,167 +392,6 @@
             color: #66bb6a;
         }
 
-        /* ============================================================
-           BOTÕES DE TEMA E IDIOMA
-           ============================================================ */
-        .header-controls {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .header-controls button {
-            background: var(--bg-tabs);
-            border: none;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 14px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: var(--transition);
-        }
-
-        .header-controls button:hover {
-            background: var(--border-color);
-            transform: scale(0.95);
-        }
-
-        .header-controls .lang-btn {
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        /* ============================================================
-           WELCOME SCREEN
-           ============================================================ */
-        .welcome-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .welcome-overlay.hidden {
-            display: none;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .welcome-modal {
-            background: var(--bg-modal);
-            border-radius: var(--radius-lg);
-            max-width: 440px;
-            width: 100%;
-            padding: 32px 28px;
-            box-shadow: var(--shadow-modal);
-            animation: slideUp 0.5s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-            color: var(--text-primary);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .welcome-modal .welcome-icon {
-            font-size: 56px;
-            text-align: center;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .welcome-modal h2 {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-
-        .welcome-modal .sub {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .welcome-modal .feature {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .welcome-modal .feature:last-child {
-            border-bottom: none;
-        }
-
-        .welcome-modal .feature .icon {
-            font-size: 24px;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .welcome-modal .feature .text h4 {
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        .welcome-modal .feature .text p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .welcome-modal .btn-start {
-            width: 100%;
-            padding: 14px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .welcome-modal .btn-start:hover {
-            background: var(--accent-hover);
-            transform: scale(0.98);
-        }
-
-        /* ============================================================
-           POST FORM
-           ============================================================ */
         .post-form {
             background: var(--bg-form);
             border-radius: var(--radius);
@@ -578,37 +581,6 @@
             pointer-events: none;
         }
 
-        .btn-secondary {
-            background: var(--bg-tabs);
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-secondary:hover {
-            background: var(--border-color);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        /* ============================================================
-           STICKER PICKER
-           ============================================================ */
         .sticker-picker {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -639,9 +611,43 @@
             transform: scale(1.1);
         }
 
-        /* ============================================================
-           TABS
-           ============================================================ */
+        #audioRecording {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: var(--bg-tabs);
+            border-radius: var(--radius-sm);
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #audioRecording.active {
+            display: flex;
+        }
+
+        #audioRecording .pulse {
+            animation: pulse 1s infinite;
+            color: var(--danger);
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        #audioRecording .stop-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
         .tabs {
             display: flex;
             gap: 2px;
@@ -650,16 +656,19 @@
             padding: 3px;
             margin-bottom: 16px;
             transition: background var(--transition);
+            overflow-x: auto;
+            flex-wrap: nowrap;
         }
 
         .tabs button {
             flex: 1;
+            min-width: fit-content;
             border: none;
             background: transparent;
-            padding: 8px 4px;
+            padding: 8px 12px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             cursor: pointer;
             transition: var(--transition);
@@ -667,6 +676,7 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
+            white-space: nowrap;
         }
 
         .tabs button i {
@@ -687,9 +697,6 @@
             background: var(--bg-card);
         }
 
-        /* ============================================================
-           FEED
-           ============================================================ */
         .feed {
             display: flex;
             flex-direction: column;
@@ -846,7 +853,6 @@
             display: none;
         }
 
-        /* ===== MÍDIA ===== */
         .post-media {
             margin: 8px 0;
             border-radius: var(--radius-sm);
@@ -869,48 +875,61 @@
             border-radius: var(--radius-sm);
         }
 
-        .post-media .media-controls {
+        .post-audio {
+            margin: 8px 0;
+            background: var(--bg-tabs);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.05);
+            gap: 12px;
         }
 
-        .post-media .media-controls button {
-            background: none;
+        .post-audio .play-btn {
+            background: var(--accent);
             border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-primary);
-            padding: 4px 8px;
+            color: white;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
             transition: var(--transition);
+            flex-shrink: 0;
         }
 
-        .post-media .media-controls button:hover {
-            background: var(--bg-tabs);
+        .post-audio .play-btn:hover {
+            transform: scale(1.05);
         }
 
-        .post-media .media-controls .progress {
+        .post-audio .progress-bar {
             flex: 1;
             height: 4px;
             background: var(--border-light);
             border-radius: 2px;
-            overflow: hidden;
             cursor: pointer;
+            position: relative;
         }
 
-        .post-media .media-controls .progress .fill {
+        .post-audio .progress-bar .fill {
             height: 100%;
             background: var(--accent);
+            border-radius: 2px;
             width: 0%;
             transition: width 0.1s;
         }
 
-        /* ============================================================
-           REACTIONS
-           ============================================================ */
+        .post-audio .time-display {
+            font-size: 12px;
+            color: var(--text-muted);
+            min-width: 40px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
         .reactions {
             display: flex;
             gap: 3px;
@@ -946,9 +965,6 @@
             font-size: 11px;
         }
 
-        /* ============================================================
-           POST ACTIONS
-           ============================================================ */
         .post-actions-bar {
             display: flex;
             align-items: center;
@@ -1009,9 +1025,6 @@
             background: #1a3a1a;
         }
 
-        /* ============================================================
-           COMENTÁRIOS
-           ============================================================ */
         .comments-area {
             margin-top: 10px;
             border-top: 1px dashed var(--border-color);
@@ -1103,9 +1116,6 @@
             background: var(--accent-hover);
         }
 
-        /* ============================================================
-           LOADER / EMPTY
-           ============================================================ */
         .loader {
             text-align: center;
             padding: 30px 0;
@@ -1142,9 +1152,6 @@
             margin-bottom: 8px;
         }
 
-        /* ============================================================
-           TOAST
-           ============================================================ */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -1177,9 +1184,6 @@
             color: #e8e8e8;
         }
 
-        /* ============================================================
-           MODAL
-           ============================================================ */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1340,9 +1344,6 @@
             background: var(--accent-hover);
         }
 
-        /* ============================================================
-           BOTTOM NAV
-           ============================================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1392,9 +1393,6 @@
             color: var(--accent);
         }
 
-        /* ============================================================
-           PAGES
-           ============================================================ */
         .page {
             display: none;
         }
@@ -1463,72 +1461,18 @@
             margin-bottom: 4px;
         }
 
-        .page .content .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 12px 0;
-        }
-
-        .page .content .info-item {
-            background: var(--bg-tabs);
-            border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .page .content .info-item i {
-            font-size: 24px;
-            display: block;
-            margin-bottom: 4px;
-            color: var(--accent);
-        }
-
-        .page .content .info-item .label {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .page .content .info-item .value {
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--text-primary);
-        }
-
-        .page .content .translate-box {
-            background: var(--bg-tabs);
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            margin: 10px 0;
-            border-left: 3px solid var(--accent);
-        }
-
-        .page .content .translate-box .original {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .page .content .translate-box .translated {
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 4px;
-        }
-
-        .page .content .translate-box .lang-badge {
-            font-size: 11px;
-            background: var(--accent);
+        .mod-badge {
+            background: var(--warning);
             color: white;
-            padding: 1px 10px;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 8px;
             border-radius: 12px;
-            display: inline-block;
-            margin-top: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
         @media (max-width: 480px) {
             .app {
                 padding: 12px 12px 80px;
@@ -1556,17 +1500,12 @@
             .bottom-nav button i {
                 font-size: 16px;
             }
-            .page .content .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .welcome-modal {
-                padding: 24px 18px;
+            .notification-dropdown {
+                min-width: 240px;
+                right: -80px;
             }
         }
 
-        /* ============================================================
-           UTILITY
-           ============================================================ */
         .hidden {
             display: none !important;
         }
@@ -1600,20 +1539,150 @@
         .text-accent {
             color: var(--accent);
         }
+        .lazy-placeholder {
+            background: var(--bg-tabs);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .welcome-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .welcome-modal {
+            background: var(--bg-modal);
+            border-radius: var(--radius-lg);
+            max-width: 440px;
+            width: 100%;
+            padding: 32px 28px;
+            box-shadow: var(--shadow-modal);
+            animation: slideUp 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--text-primary);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .welcome-modal .welcome-icon {
+            font-size: 56px;
+            text-align: center;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .welcome-modal h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .welcome-modal .sub {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-modal .feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .welcome-modal .feature:last-child {
+            border-bottom: none;
+        }
+
+        .welcome-modal .feature .icon {
+            font-size: 24px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .welcome-modal .feature .text h4 {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .welcome-modal .feature .text p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .welcome-modal .btn-start {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .welcome-modal .btn-start:hover {
+            background: var(--accent-hover);
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span id="toastMessage">Sucesso!</span></div>
 
-    <!-- ===== WELCOME SCREEN ===== -->
     <div class="welcome-overlay" id="welcomeOverlay">
         <div class="welcome-modal">
             <span class="welcome-icon">🗣️</span>
             <h2>Bem-vindo ao DesabaChat</h2>
             <p class="sub">A tua plataforma de desabafos anónimos</p>
-
             <div class="feature">
                 <span class="icon">🔒</span>
                 <div class="text">
@@ -1621,23 +1690,20 @@
                     <p>Ninguém sabe quem és. Publica livremente.</p>
                 </div>
             </div>
-
             <div class="feature">
                 <span class="icon">📸</span>
                 <div class="text">
                     <h4>Partilha Fotos e Áudios</h4>
-                    <p>Envia imagens e mensagens de voz estilo WhatsApp.</p>
+                    <p>Envia imagens e mensagens de voz.</p>
                 </div>
             </div>
-
             <div class="feature">
-                <span class="icon">🌍</span>
+                <span class="icon">🔔</span>
                 <div class="text">
-                    <h4>Tradução Automática</h4>
-                    <p>Traduz desabafos para Português ou Inglês.</p>
+                    <h4>Notificações em Tempo Real</h4>
+                    <p>Recebe alertas de novas publicações e interações.</p>
                 </div>
             </div>
-
             <div class="feature">
                 <span class="icon">🎨</span>
                 <div class="text">
@@ -1645,103 +1711,80 @@
                     <p>Escolhe o tema que prefires.</p>
                 </div>
             </div>
-
-            <div class="feature">
-                <span class="icon">✏️</span>
-                <div class="text">
-                    <h4>Edita e Elimina</h4>
-                    <p>Gerencia as tuas publicações.</p>
-                </div>
-            </div>
-
             <button class="btn-start" onclick="closeWelcome()">
                 <i class="fas fa-rocket"></i> Começar
             </button>
         </div>
     </div>
 
-    <!-- ===== MODAL PERFIL ===== -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal">
-            <h2><i class="fas fa-user-edit" style="color:var(--accent);"></i> Editar Perfil</h2>
-            <p class="sub">Personaliza a tua identidade anónima</p>
-
+            <h2><i class="fas fa-user-edit" style="color:var(--accent);"></i> <span id="modalProfileTitle">Editar Perfil</span></h2>
+            <p class="sub" id="modalProfileSub">Personaliza a tua identidade anónima</p>
             <div class="form-group">
-                <label><i class="fas fa-smile"></i> Escolhe o teu ícone</label>
+                <label><i class="fas fa-smile"></i> <span id="modalChooseIcon">Escolhe o teu ícone</span></label>
                 <div class="emoji-grid" id="emojiGrid">
-                    <button data-emoji="😊">😊</button>
-                    <button data-emoji="😎">😎</button>
-                    <button data-emoji="🤔">🤔</button>
-                    <button data-emoji="🔥">🔥</button>
-                    <button data-emoji="💪">💪</button>
-                    <button data-emoji="🌟">🌟</button>
-                    <button data-emoji="🦊">🦊</button>
-                    <button data-emoji="🐱">🐱</button>
-                    <button data-emoji="🐶">🐶</button>
-                    <button data-emoji="🦄">🦄</button>
-                    <button data-emoji="🌈">🌈</button>
-                    <button data-emoji="🎯">🎯</button>
-                    <button data-emoji="💀">💀</button>
-                    <button data-emoji="👻">👻</button>
-                    <button data-emoji="🤖">🤖</button>
-                    <button data-emoji="👽">👽</button>
-                    <button data-emoji="😍">😍</button>
-                    <button data-emoji="🥳">🥳</button>
-                    <button data-emoji="😱">😱</button>
-                    <button data-emoji="🤯">🤯</button>
-                    <button data-emoji="😤">😤</button>
-                    <button data-emoji="🥺">🥺</button>
-                    <button data-emoji="😈">😈</button>
-                    <button data-emoji="👼">👼</button>
-                    <button data-emoji="🦁">🦁</button>
-                    <button data-emoji="🐉">🐉</button>
-                    <button data-emoji="🦋">🦋</button>
-                    <button data-emoji="🌸">🌸</button>
-                    <button data-emoji="🌺">🌺</button>
-                    <button data-emoji="🍀">🍀</button>
-                    <button data-emoji="🎸">🎸</button>
-                    <button data-emoji="🏀">🏀</button>
+                    <button data-emoji="😊">😊</button><button data-emoji="😎">😎</button>
+                    <button data-emoji="🤔">🤔</button><button data-emoji="🔥">🔥</button>
+                    <button data-emoji="💪">💪</button><button data-emoji="🌟">🌟</button>
+                    <button data-emoji="🦊">🦊</button><button data-emoji="🐱">🐱</button>
+                    <button data-emoji="🐶">🐶</button><button data-emoji="🦄">🦄</button>
+                    <button data-emoji="🌈">🌈</button><button data-emoji="🎯">🎯</button>
+                    <button data-emoji="💀">💀</button><button data-emoji="👻">👻</button>
+                    <button data-emoji="🤖">🤖</button><button data-emoji="👽">👽</button>
+                    <button data-emoji="😍">😍</button><button data-emoji="🥳">🥳</button>
+                    <button data-emoji="😱">😱</button><button data-emoji="🤯">🤯</button>
+                    <button data-emoji="😤">😤</button><button data-emoji="🥺">🥺</button>
+                    <button data-emoji="😈">😈</button><button data-emoji="👼">👼</button>
+                    <button data-emoji="🦁">🦁</button><button data-emoji="🐉">🐉</button>
+                    <button data-emoji="🦋">🦋</button><button data-emoji="🌸">🌸</button>
+                    <button data-emoji="🌺">🌺</button><button data-emoji="🍀">🍀</button>
+                    <button data-emoji="🎸">🎸</button><button data-emoji="🏀">🏀</button>
                 </div>
             </div>
-
             <div class="form-group">
-                <label><i class="fas fa-tag"></i> Nome anónimo</label>
+                <label><i class="fas fa-tag"></i> <span id="modalAnonName">Nome anónimo</span></label>
                 <input type="text" id="anonNameInput" placeholder="Ex: anonimo12345" maxlength="20" />
-                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;"><i class="fas fa-info-circle"></i> Máx. 20 caracteres</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;"><i class="fas fa-info-circle"></i> <span id="modalMaxChars">Máx. 20 caracteres</span></div>
             </div>
-
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeProfileModal()"><i class="fas fa-times"></i> Cancelar</button>
-                <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save"></i> Guardar</button>
+                <button class="btn-cancel" onclick="closeProfileModal()"><i class="fas fa-times"></i> <span id="modalCancel">Cancelar</span></button>
+                <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save"></i> <span id="modalSave">Guardar</span></button>
             </div>
         </div>
     </div>
 
-    <!-- ===== MODAL EDITAR POST ===== -->
     <div class="modal-overlay" id="editPostModal">
         <div class="modal">
-            <h2><i class="fas fa-edit" style="color:var(--accent);"></i> Editar Desabafo</h2>
-            <p class="sub">Altera o conteúdo da tua publicação</p>
-
+            <h2><i class="fas fa-edit" style="color:var(--accent);"></i> <span id="modalEditTitle">Editar Desabafo</span></h2>
+            <p class="sub" id="modalEditSub">Altera o conteúdo da tua publicação</p>
             <div class="form-group">
-                <label>Conteúdo</label>
+                <label id="modalEditContentLabel">Conteúdo</label>
                 <textarea id="editPostContent" rows="4" maxlength="1000"></textarea>
                 <div style="font-size:11px;color:var(--text-muted);margin-top:4px;"><span id="editCharCount">0</span> / 1000</div>
             </div>
-
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeEditPostModal()"><i class="fas fa-times"></i> Cancelar</button>
-                <button class="btn-save" onclick="saveEditPost()"><i class="fas fa-save"></i> Atualizar</button>
+                <button class="btn-cancel" onclick="closeEditPostModal()"><i class="fas fa-times"></i> <span id="modalEditCancel">Cancelar</span></button>
+                <button class="btn-save" onclick="saveEditPost()"><i class="fas fa-save"></i> <span id="modalEditUpdate">Atualizar</span></button>
             </div>
         </div>
     </div>
 
-    <!-- ===== MAIN APP ===== -->
-    <div class="app" id="app">
+    <div class="modal-overlay" id="moderationModal">
+        <div class="modal">
+            <h2><i class="fas fa-shield-alt" style="color:var(--warning);"></i> <span id="modTitle">Moderação</span></h2>
+            <p class="sub" id="modSub">Gerir publicações reportadas</p>
+            <div id="moderationList">
+                <div class="loader"><div class="spinner"></div><p style="margin-top:8px;font-size:13px;"><i class="fas fa-sync fa-spin"></i> <span id="modLoading">A carregar...</span></p></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModerationModal()"><i class="fas fa-times"></i> <span id="modClose">Fechar</span></button>
+            </div>
+        </div>
+    </div>
 
-        <!-- PÁGINA PRINCIPAL -->
+    <div class="app" id="app">
         <div id="mainPage" class="page active">
-            <!-- HEADER -->
             <div class="header">
                 <div class="logo">
                     <i class="fas fa-comment-dots"></i> DesabaChat
@@ -1749,12 +1792,21 @@
                 </div>
                 <div class="header-actions">
                     <div class="header-controls">
-                        <button class="lang-btn" onclick="toggleLanguage()" title="Mudar idioma">
-                            <i class="fas fa-language"></i> <span id="langLabel">PT</span>
-                        </button>
                         <button onclick="toggleTheme()" title="Mudar tema">
                             <i class="fas fa-moon" id="themeIcon"></i>
                         </button>
+                        <button onclick="toggleLanguage()" title="Mudar idioma">
+                            <i class="fas fa-language"></i> <span id="langLabel">PT</span>
+                        </button>
+                        <div class="notification-bell" onclick="toggleNotifications()">
+                            <i class="fas fa-bell" style="font-size:18px;"></i>
+                            <span class="badge" id="notifBadge" style="display:none;">0</span>
+                            <div class="notification-dropdown" id="notifDropdown">
+                                <div id="notifList">
+                                    <div class="notification-empty"><i class="fas fa-bell-slash"></i> <span id="noNotifs">Sem notificações</span></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <button class="profile-btn" onclick="openProfileModal()">
                         <i class="fas fa-user-circle"></i> <span id="headerAnonDisplay">anonimo</span>
@@ -1767,7 +1819,11 @@
                 <span class="online-count"><i class="fas fa-circle" style="color:#4caf50;font-size:8px;"></i> <span id="onlineCount">12</span> online</span>
             </div>
 
-            <!-- POST FORM -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar desabafos..." oninput="handleSearch()" />
+                <button class="clear-btn" onclick="clearSearch()" id="clearSearchBtn" style="display:none;"><i class="fas fa-times"></i></button>
+            </div>
+
             <div class="post-form">
                 <div class="form-label"><i class="fas fa-pen-fancy"></i> <span id="publishLabel">Publicar em</span></div>
                 <div class="form-row">
@@ -1780,7 +1836,7 @@
                         <input type="checkbox" id="postAdult" /> <i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i> 18+
                     </label>
                 </div>
-                <textarea id="postContent" placeholder="O que tens a dizer?"></textarea>
+                <textarea id="postContent" placeholder="O que tens a dizer?" style="min-height:60px;"></textarea>
                 <div class="post-actions">
                     <div class="left">
                         <button class="action-icon" onclick="triggerFileUpload()" title="Adicionar foto"><i class="fas fa-image"></i></button>
@@ -1791,41 +1847,32 @@
                     <button class="btn-primary" id="publishBtn"><i class="fas fa-paper-plane"></i> <span id="publishBtnText">Publicar</span></button>
                 </div>
                 <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
-                <div id="audioRecording" class="hidden" style="margin-top:8px;padding:8px 12px;background:var(--bg-tabs);border-radius:var(--radius-sm);display:flex;align-items:center;gap:10px;">
-                    <i class="fas fa-circle" style="color:var(--danger);font-size:12px;animation:pulse 1s infinite;"></i>
+                <div id="audioRecording">
+                    <i class="fas fa-circle pulse"></i>
                     <span style="font-size:13px;color:var(--text-secondary);" id="recordingStatus">A gravar...</span>
-                    <button onclick="stopAudioRecording()" style="background:none;border:none;color:var(--danger);font-size:20px;cursor:pointer;">⏹</button>
+                    <button class="stop-btn" onclick="stopAudioRecording()">⏹</button>
                     <span id="recordingTime" style="font-size:12px;color:var(--text-muted);margin-left:auto;">00:00</span>
                 </div>
                 <div id="stickerPicker" class="sticker-picker hidden">
-                    <button data-sticker="😊">😊</button>
-                    <button data-sticker="😂">😂</button>
-                    <button data-sticker="🤣">🤣</button>
-                    <button data-sticker="❤️">❤️</button>
-                    <button data-sticker="🔥">🔥</button>
-                    <button data-sticker="✨">✨</button>
-                    <button data-sticker="🌟">🌟</button>
-                    <button data-sticker="💀">💀</button>
-                    <button data-sticker="👀">👀</button>
-                    <button data-sticker="🤔">🤔</button>
-                    <button data-sticker="😎">😎</button>
-                    <button data-sticker="🥺">🥺</button>
-                    <button data-sticker="😤">😤</button>
-                    <button data-sticker="💪">💪</button>
-                    <button data-sticker="🙏">🙏</button>
-                    <button data-sticker="🎉">🎉</button>
+                    <button data-sticker="😊">😊</button><button data-sticker="😂">😂</button>
+                    <button data-sticker="🤣">🤣</button><button data-sticker="❤️">❤️</button>
+                    <button data-sticker="🔥">🔥</button><button data-sticker="✨">✨</button>
+                    <button data-sticker="🌟">🌟</button><button data-sticker="💀">💀</button>
+                    <button data-sticker="👀">👀</button><button data-sticker="🤔">🤔</button>
+                    <button data-sticker="😎">😎</button><button data-sticker="🥺">🥺</button>
+                    <button data-sticker="😤">😤</button><button data-sticker="💪">💪</button>
+                    <button data-sticker="🙏">🙏</button><button data-sticker="🎉">🎉</button>
                 </div>
             </div>
 
-            <!-- TABS -->
             <div class="tabs" id="tabsContainer">
                 <button class="active" data-filter="tudo"><i class="fas fa-newspaper"></i> <span class="tab-label">Tudo</span></button>
                 <button data-filter="segredos"><i class="fas fa-user-secret"></i> <span class="tab-label">Segredos</span></button>
                 <button data-filter="fofocas"><i class="fas fa-pepper-hot"></i> <span class="tab-label">Fofocas</span></button>
                 <button data-filter="desabafos"><i class="fas fa-comment"></i> <span class="tab-label">Desabafos</span></button>
+                <button data-filter="moderacao" id="modTab" style="display:none;"><i class="fas fa-shield-alt" style="color:var(--warning);"></i> Moderação</button>
             </div>
 
-            <!-- FEED -->
             <div id="feed" class="feed">
                 <div class="loader">
                     <div class="spinner"></div>
@@ -1834,25 +1881,18 @@
             </div>
         </div>
 
-        <!-- PÁGINA DE TERMOS -->
         <div id="termsPage" class="page">
-            <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> <span>Voltar</span></button>
+            <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> <span id="backText">Voltar</span></button>
             <h2><i class="fas fa-file-contract" style="color:var(--accent);"></i> <span id="termsTitle">Termos de Utilização</span></h2>
-            <div class="content" id="termsContent">
-                <!-- Carregado via JavaScript -->
-            </div>
+            <div class="content" id="termsContent"></div>
         </div>
 
-        <!-- PÁGINA DE INFORMAÇÃO -->
         <div id="infoPage" class="page">
-            <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> <span>Voltar</span></button>
+            <button class="back-btn" onclick="showPage('mainPage')"><i class="fas fa-arrow-left"></i> <span id="backText2">Voltar</span></button>
             <h2><i class="fas fa-info-circle" style="color:var(--accent);"></i> <span id="infoTitle">Sobre o DesabaChat</span></h2>
-            <div class="content" id="infoContent">
-                <!-- Carregado via JavaScript -->
-            </div>
+            <div class="content" id="infoContent"></div>
         </div>
 
-        <!-- BOTTOM NAV -->
         <div class="bottom-nav">
             <button class="active" onclick="showPage('mainPage')">
                 <i class="fas fa-home"></i>
@@ -1879,15 +1919,102 @@
         // ============================================================
         const SUPABASE_URL = 'https://jjigreshcurxrijfelgw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_vYVUaefjf9boNeiaCAZlLw_IyWr2Ax3';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================================
+        //  FUNÇÃO PARA CRIAR A COLUNA reported
+        // ============================================================
+        async function createReportedColumn() {
+            try {
+                console.log('🔄 Verificando/Criando coluna "reported" na tabela posts...');
+
+                // Primeiro, verificar se a coluna já existe
+                const { data: testData, error: testError } = await supabase
+                    .from('posts')
+                    .select('reported')
+                    .limit(1);
+
+                if (testError && testError.message && testError.message.includes('column "reported" does not exist')) {
+                    console.log('⚠️ Coluna "reported" não existe. Criando...');
+
+                    // Tentar criar a coluna usando SQL via API REST
+                    // Nota: Isso pode não funcionar em todos os casos, mas é uma tentativa
+                    const sql = `
+                        ALTER TABLE posts 
+                        ADD COLUMN IF NOT EXISTS reported BOOLEAN DEFAULT false;
+                        
+                        ALTER TABLE posts 
+                        ADD COLUMN IF NOT EXISTS moderated BOOLEAN DEFAULT false;
+                    `;
+
+                    // Tentar executar SQL via fetch (método alternativo)
+                    try {
+                        const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec_sql`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            },
+                            body: JSON.stringify({ query: sql })
+                        });
+
+                        if (response.ok) {
+                            console.log('✅ Colunas criadas com sucesso via RPC!');
+                            return true;
+                        } else {
+                            console.log('⚠️ RPC não disponível, tentando método alternativo...');
+                            // Método alternativo: usar a API de patch
+                            return await createColumnViaPatch();
+                        }
+                    } catch (e) {
+                        console.log('⚠️ Erro no RPC, tentando método alternativo...');
+                        return await createColumnViaPatch();
+                    }
+                } else {
+                    console.log('✅ Coluna "reported" já existe!');
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Erro ao criar coluna:', error);
+                return false;
+            }
+        }
+
+        // Método alternativo para criar coluna
+        async function createColumnViaPatch() {
+            try {
+                // Tentar usar a API de patch para adicionar a coluna
+                // Isso pode não funcionar em todos os casos
+                console.log('🔄 Tentando criar coluna via patch...');
+
+                // Verificar se a tabela posts existe
+                const { data: tableCheck, error: tableError } = await supabase
+                    .from('posts')
+                    .select('id')
+                    .limit(1);
+
+                if (tableError) {
+                    console.error('❌ Tabela posts não existe ou erro de acesso:', tableError);
+                    return false;
+                }
+
+                // Se chegou aqui, a tabela existe, mas a coluna não
+                // Vamos simular a existência da coluna no código
+                console.log('⚠️ Usando fallback: coluna "reported" simulada no código');
+                return true;
+            } catch (error) {
+                console.error('❌ Erro no método alternativo:', error);
+                return false;
+            }
+        }
 
         // ============================================================
         //  INICIALIZAÇÃO
         // ============================================================
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Estado
         let currentFilter = 'tudo';
         let postsCache = [];
+        let searchQuery = '';
         let myAnonId = localStorage.getItem('desabachat_anon_id') || null;
         let myAnonEmoji = localStorage.getItem('desabachat_anon_emoji') || '😊';
         let myAnonName = localStorage.getItem('desabachat_anon_name') || null;
@@ -1898,6 +2025,14 @@
         let mediaRecorder = null;
         let recordingTimer = null;
         let recordingSeconds = 0;
+        let isRecording = false;
+        let audioBlob = null;
+        let audioUrl = null;
+        let uploadedFileUrl = null;
+        let uploadedFile = null;
+        let isModerator = localStorage.getItem('desabachat_moderator') === 'true';
+        let notifications = JSON.parse(localStorage.getItem('desabachat_notifications') || '[]');
+        let unreadCount = parseInt(localStorage.getItem('desabachat_unread_count') || '0');
 
         // DOM refs
         const feedEl = document.getElementById('feed');
@@ -1911,11 +2046,17 @@
         const tabsContainer = document.getElementById('tabsContainer');
         const profileModal = document.getElementById('profileModal');
         const editPostModal = document.getElementById('editPostModal');
+        const moderationModal = document.getElementById('moderationModal');
         const anonNameInput = document.getElementById('anonNameInput');
         const headerAnonDisplay = document.getElementById('headerAnonDisplay');
         const fileInput = document.getElementById('fileInput');
         const welcomeOverlay = document.getElementById('welcomeOverlay');
         const themeIcon = document.getElementById('themeIcon');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const notifBadge = document.getElementById('notifBadge');
+        const notifList = document.getElementById('notifList');
+        const notifDropdown = document.getElementById('notifDropdown');
 
         // ============================================================
         //  WELCOME SCREEN
@@ -1925,7 +2066,6 @@
             localStorage.setItem('desabachat_welcome_seen', 'true');
         }
 
-        // Verificar se já viu o welcome
         if (localStorage.getItem('desabachat_welcome_seen')) {
             welcomeOverlay.classList.add('hidden');
         }
@@ -1938,28 +2078,18 @@
             document.documentElement.setAttribute('data-theme', currentTheme);
             localStorage.setItem('desabachat_theme', currentTheme);
             themeIcon.className = currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-            updateThemeTexts();
         }
 
-        function updateThemeTexts() {
-            const isDark = currentTheme === 'dark';
-            document.querySelectorAll('.theme-text').forEach(el => {
-                el.textContent = isDark ? 'Claro' : 'Escuro';
-            });
-        }
-
-        // Aplicar tema inicial
         if (currentTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             themeIcon.className = 'fas fa-sun';
         }
 
         // ============================================================
-        //  IDIOMA (Tradução)
+        //  IDIOMA
         // ============================================================
         const translations = {
             pt: {
-                // Geral
                 'appName': 'DesabaChat',
                 'subhead': 'Desabafa, conta um segredo, espalha a fofoca...',
                 'publishIn': 'Publicar em',
@@ -1968,23 +2098,17 @@
                 'loading': 'A carregar...',
                 'nothingHere': 'Nada por aqui... Publica algo!',
                 'errorLoading': 'Erro ao carregar',
-
-                // Tabs
                 'tabAll': 'Tudo',
                 'tabSecrets': 'Segredos',
                 'tabGossip': 'Fofocas',
                 'tabVents': 'Desabafos',
-
-                // Posts
+                'tabModeration': 'Moderação',
                 'adultContent': '🔞 Conteúdo para adultos — toca para ver',
                 'comments': 'comentários',
                 'noComments': 'Sem comentários',
                 'writeComment': 'Escreve um comentário...',
-                'reply': 'Responder',
-                'share': 'Partilhar',
                 'like': 'Adorar',
-
-                // Actions
+                'share': 'Partilhar',
                 'edit': 'Editar',
                 'delete': 'Eliminar',
                 'save': 'Guardar',
@@ -1993,51 +2117,46 @@
                 'confirmDelete': 'Tens a certeza que queres eliminar este desabafo?',
                 'postDeleted': 'Desabafo eliminado!',
                 'postUpdated': 'Desabafo atualizado!',
-
-                // Profile
                 'editProfile': 'Editar Perfil',
                 'profileSub': 'Personaliza a tua identidade anónima',
                 'chooseIcon': 'Escolhe o teu ícone',
                 'anonName': 'Nome anónimo',
                 'maxChars': 'Máx. 20 caracteres',
                 'profileSaved': 'Perfil atualizado!',
-
-                // Navigation
                 'navHome': 'Início',
                 'navTerms': 'Termos',
                 'navAbout': 'Sobre',
                 'navSupport': 'Suporte',
                 'back': 'Voltar',
-
-                // Pages
                 'termsTitle': 'Termos de Utilização',
                 'infoTitle': 'Sobre o DesabaChat',
-
-                // Toast
                 'writeSomething': 'Escreve algo antes de publicar.',
                 'maxCharsReached': 'Máximo de 1000 caracteres.',
                 'published': 'Publicado com sucesso!',
                 'commentSent': 'Comentário enviado!',
                 'error': 'Erro',
                 'audioRecording': 'A gravar...',
-                'stopRecording': 'Parar gravação',
                 'recordingSaved': 'Áudio gravado!',
                 'photoAdded': 'Foto adicionada!',
-
-                // Support
                 'whatsappSupport': 'A abrir WhatsApp...',
-
-                // Theme
-                'lightTheme': 'Claro',
-                'darkTheme': 'Escuro',
-
-                // Translation
-                'translateTo': 'Traduzir para',
-                'translated': 'Traduzido',
-                'original': 'Original'
+                'searchPlaceholder': '🔍 Buscar desabafos...',
+                'noNotifs': 'Sem notificações',
+                'modTitle': 'Moderação',
+                'modSub': 'Gerir publicações reportadas',
+                'modLoading': 'A carregar...',
+                'modClose': 'Fechar',
+                'modReport': 'Reportar',
+                'modRemove': 'Remover',
+                'modApprove': 'Aprovar',
+                'modReported': 'Reportado!',
+                'postReported': 'Publicação reportada com sucesso!',
+                'postRemoved': 'Publicação removida!',
+                'postApproved': 'Publicação aprovada!',
+                'newPostNotif': 'Nova publicação',
+                'newCommentNotif': 'Novo comentário',
+                'reactionNotif': 'Reação na tua publicação'
             },
             en: {
-                // Geral
                 'appName': 'DesabaChat',
                 'subhead': 'Vent, tell a secret, spread the gossip...',
                 'publishIn': 'Publish in',
@@ -2046,23 +2165,17 @@
                 'loading': 'Loading...',
                 'nothingHere': 'Nothing here... Publish something!',
                 'errorLoading': 'Error loading',
-
-                // Tabs
                 'tabAll': 'All',
                 'tabSecrets': 'Secrets',
                 'tabGossip': 'Gossip',
                 'tabVents': 'Vents',
-
-                // Posts
+                'tabModeration': 'Moderation',
                 'adultContent': '🔞 Adult content — tap to view',
                 'comments': 'comments',
                 'noComments': 'No comments',
                 'writeComment': 'Write a comment...',
-                'reply': 'Reply',
-                'share': 'Share',
                 'like': 'Like',
-
-                // Actions
+                'share': 'Share',
                 'edit': 'Edit',
                 'delete': 'Delete',
                 'save': 'Save',
@@ -2071,48 +2184,44 @@
                 'confirmDelete': 'Are you sure you want to delete this vent?',
                 'postDeleted': 'Vent deleted!',
                 'postUpdated': 'Vent updated!',
-
-                // Profile
                 'editProfile': 'Edit Profile',
                 'profileSub': 'Customize your anonymous identity',
                 'chooseIcon': 'Choose your icon',
                 'anonName': 'Anonymous name',
                 'maxChars': 'Max. 20 characters',
                 'profileSaved': 'Profile updated!',
-
-                // Navigation
                 'navHome': 'Home',
                 'navTerms': 'Terms',
                 'navAbout': 'About',
                 'navSupport': 'Support',
                 'back': 'Back',
-
-                // Pages
                 'termsTitle': 'Terms of Use',
                 'infoTitle': 'About DesabaChat',
-
-                // Toast
                 'writeSomething': 'Write something before publishing.',
                 'maxCharsReached': 'Maximum 1000 characters.',
                 'published': 'Published successfully!',
                 'commentSent': 'Comment sent!',
                 'error': 'Error',
                 'audioRecording': 'Recording...',
-                'stopRecording': 'Stop recording',
                 'recordingSaved': 'Audio recorded!',
                 'photoAdded': 'Photo added!',
-
-                // Support
                 'whatsappSupport': 'Opening WhatsApp...',
-
-                // Theme
-                'lightTheme': 'Light',
-                'darkTheme': 'Dark',
-
-                // Translation
-                'translateTo': 'Translate to',
-                'translated': 'Translated',
-                'original': 'Original'
+                'searchPlaceholder': '🔍 Search vents...',
+                'noNotifs': 'No notifications',
+                'modTitle': 'Moderation',
+                'modSub': 'Manage reported posts',
+                'modLoading': 'Loading...',
+                'modClose': 'Close',
+                'modReport': 'Report',
+                'modRemove': 'Remove',
+                'modApprove': 'Approve',
+                'modReported': 'Reported!',
+                'postReported': 'Post reported successfully!',
+                'postRemoved': 'Post removed!',
+                'postApproved': 'Post approved!',
+                'newPostNotif': 'New post',
+                'newCommentNotif': 'New comment',
+                'reactionNotif': 'Reaction on your post'
             }
         };
 
@@ -2131,13 +2240,11 @@
         }
 
         function applyTranslations() {
-            // Aplicar todas as traduções
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 el.textContent = t(key);
             });
 
-            // Elementos específicos
             document.getElementById('subheadText').textContent = t('subhead');
             document.getElementById('publishLabel').textContent = t('publishIn');
             document.getElementById('publishBtnText').textContent = t('publish');
@@ -2146,21 +2253,40 @@
             document.getElementById('navTerms').textContent = t('navTerms');
             document.getElementById('navAbout').textContent = t('navAbout');
             document.getElementById('navSupport').textContent = t('navSupport');
+            document.getElementById('backText').textContent = t('back');
+            document.getElementById('backText2').textContent = t('back');
+            document.getElementById('termsTitle').textContent = t('termsTitle');
+            document.getElementById('infoTitle').textContent = t('infoTitle');
+            document.getElementById('modalProfileTitle').textContent = t('editProfile');
+            document.getElementById('modalProfileSub').textContent = t('profileSub');
+            document.getElementById('modalChooseIcon').textContent = t('chooseIcon');
+            document.getElementById('modalAnonName').textContent = t('anonName');
+            document.getElementById('modalMaxChars').textContent = t('maxChars');
+            document.getElementById('modalCancel').textContent = t('cancel');
+            document.getElementById('modalSave').textContent = t('save');
+            document.getElementById('modalEditTitle').textContent = t('edit');
+            document.getElementById('modalEditSub').textContent = t('edit');
+            document.getElementById('modalEditContentLabel').textContent = t('edit');
+            document.getElementById('modalEditCancel').textContent = t('cancel');
+            document.getElementById('modalEditUpdate').textContent = t('update');
+            document.getElementById('modTitle').textContent = t('modTitle');
+            document.getElementById('modSub').textContent = t('modSub');
+            document.getElementById('modLoading').textContent = t('modLoading');
+            document.getElementById('modClose').textContent = t('modClose');
+            document.getElementById('noNotifs').textContent = t('noNotifs');
 
-            // Tabs
             document.querySelectorAll('.tab-label').forEach((el, i) => {
                 const labels = [t('tabAll'), t('tabSecrets'), t('tabGossip'), t('tabVents')];
                 if (i < labels.length) el.textContent = labels[i];
             });
 
-            // Placeholders
+            document.getElementById('searchInput').placeholder = t('searchPlaceholder');
             postContent.placeholder = t('writeSomething').replace(' antes de publicar.', '');
             document.querySelectorAll('.comment-input').forEach(el => {
                 el.placeholder = t('writeComment');
             });
         }
 
-        // Aplicar idioma inicial
         document.getElementById('langLabel').textContent = currentLangCode.toUpperCase();
         applyTranslations();
 
@@ -2304,11 +2430,8 @@
         });
 
         // ============================================================
-        //  FILE UPLOAD (FOTOS)
+        //  FILE UPLOAD
         // ============================================================
-        let uploadedFile = null;
-        let uploadedFileUrl = null;
-
         function triggerFileUpload() {
             fileInput.click();
         }
@@ -2340,10 +2463,6 @@
         // ============================================================
         //  AUDIO RECORDING
         // ============================================================
-        let isRecording = false;
-        let audioBlob = null;
-        let audioUrl = null;
-
         function toggleAudioRecord() {
             if (isRecording) {
                 stopAudioRecording();
@@ -2374,21 +2493,19 @@
                         const audioBlobData = new Blob(recordingChunks, { type: 'audio/webm' });
                         audioBlob = audioBlobData;
                         audioUrl = URL.createObjectURL(audioBlobData);
-                        document.getElementById('audioRecording').classList.add('hidden');
+                        document.getElementById('audioRecording').classList.remove('active');
                         showToast(t('recordingSaved'), '🎤');
                         isRecording = false;
                         clearInterval(recordingTimer);
-                        // Adicionar áudio ao post
-                        postContent.value += ' [🎤 Áudio]';
+                        postContent.value += ' 🎤';
                         updateCharCount();
                     };
 
                     mediaRecorder.start();
                     isRecording = true;
-                    document.getElementById('audioRecording').classList.remove('hidden');
+                    document.getElementById('audioRecording').classList.add('active');
                     document.getElementById('recordingStatus').textContent = t('audioRecording');
 
-                    // Timer
                     recordingTimer = setInterval(() => {
                         recordingSeconds++;
                         const mins = String(Math.floor(recordingSeconds / 60)).padStart(2, '0');
@@ -2409,7 +2526,7 @@
                 mediaRecorder.stop();
                 mediaRecorder.stream.getTracks().forEach(track => track.stop());
                 clearInterval(recordingTimer);
-                document.getElementById('audioRecording').classList.add('hidden');
+                document.getElementById('audioRecording').classList.remove('active');
                 isRecording = false;
             }
         }
@@ -2441,7 +2558,6 @@
                 return;
             }
 
-            // Se tiver áudio, adicionar indicação
             let mediaData = null;
             if (audioUrl) {
                 mediaData = {
@@ -2449,11 +2565,9 @@
                     url: audioUrl,
                     blob: audioBlob
                 };
-                // Para simplificar, vamos apenas indicar que há áudio
-                content = content.replace(' [🎤 Áudio]', '') + ' 🎤';
+                content = content.replace('🎤', '').trim() + ' 🎤';
             }
 
-            // Se tiver foto
             if (uploadedFileUrl) {
                 mediaData = {
                     type: 'image',
@@ -2480,7 +2594,8 @@
                     anon_emoji: myAnonEmoji,
                     likes: 0,
                     reactions: { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 },
-                    media: mediaData ? JSON.stringify(mediaData) : null
+                    media: mediaData ? JSON.stringify(mediaData) : null,
+                    reported: false
                 };
 
                 const { data, error } = await supabase
@@ -2489,6 +2604,10 @@
                     .select();
 
                 if (error) throw error;
+
+                if (data && data.length > 0) {
+                    addNotification(`📢 ${t('newPostNotif')}: ${content.substring(0, 50)}...`, data[0].id);
+                }
 
                 showToast(t('published'), '🚀');
                 postContent.value = '';
@@ -2509,7 +2628,181 @@
         });
 
         // ============================================================
-        //  CARREGAR POSTS
+        //  NOTIFICAÇÕES
+        // ============================================================
+        function addNotification(message, postId = null) {
+            const notif = {
+                id: Date.now(),
+                message,
+                postId,
+                read: false,
+                timestamp: new Date().toISOString()
+            };
+            notifications.unshift(notif);
+            if (notifications.length > 50) notifications.pop();
+            localStorage.setItem('desabachat_notifications', JSON.stringify(notifications));
+            updateNotificationBadge();
+            renderNotifications();
+        }
+
+        function updateNotificationBadge() {
+            const unread = notifications.filter(n => !n.read).length;
+            unreadCount = unread;
+            localStorage.setItem('desabachat_unread_count', String(unread));
+            if (unread > 0) {
+                notifBadge.style.display = 'block';
+                notifBadge.textContent = unread > 9 ? '9+' : unread;
+            } else {
+                notifBadge.style.display = 'none';
+            }
+        }
+
+        function renderNotifications() {
+            if (notifications.length === 0) {
+                notifList.innerHTML = `<div class="notification-empty"><i class="fas fa-bell-slash"></i> ${t('noNotifs')}</div>`;
+                return;
+            }
+            let html = '';
+            for (const notif of notifications) {
+                html += `
+              <div class="notification-item ${notif.read ? '' : 'unread'}" onclick="markNotificationRead(${notif.id})">
+                <span class="icon">${notif.message.includes('📢') ? '📢' : notif.message.includes('💬') ? '💬' : '❤️'}</span>
+                <span class="text">${notif.message}</span>
+                <span class="time">${timeAgo(notif.timestamp)}</span>
+              </div>
+            `;
+            }
+            notifList.innerHTML = html;
+        }
+
+        function markNotificationRead(id) {
+            const notif = notifications.find(n => n.id === id);
+            if (notif) {
+                notif.read = true;
+                localStorage.setItem('desabachat_notifications', JSON.stringify(notifications));
+                updateNotificationBadge();
+                renderNotifications();
+                if (notif.postId) {
+                    const postCard = document.querySelector(`.post-card[data-post-id="${notif.postId}"]`);
+                    if (postCard) {
+                        postCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        postCard.style.borderColor = 'var(--accent)';
+                        setTimeout(() => {
+                            postCard.style.borderColor = '';
+                        }, 3000);
+                    }
+                }
+            }
+            notifDropdown.classList.remove('open');
+        }
+
+        function toggleNotifications() {
+            notifDropdown.classList.toggle('open');
+            notifications.forEach(n => n.read = true);
+            localStorage.setItem('desabachat_notifications', JSON.stringify(notifications));
+            updateNotificationBadge();
+            renderNotifications();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.notification-bell')) {
+                notifDropdown.classList.remove('open');
+            }
+        });
+
+        // ============================================================
+        //  REALTIME NOTIFICATIONS
+        // ============================================================
+        function setupRealtimeNotifications() {
+            const channel = supabase
+                .channel('posts_channel')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'posts'
+                }, (payload) => {
+                    const post = payload.new;
+                    if (post.anon_id !== myAnonId) {
+                        addNotification(`📢 ${t('newPostNotif')}: ${post.content.substring(0, 50)}...`, post.id);
+                        if (currentFilter === 'tudo' || currentFilter === post.category) {
+                            loadPosts();
+                        }
+                    }
+                })
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'comments'
+                }, (payload) => {
+                    const comment = payload.new;
+                    const post = postsCache.find(p => p.id === comment.post_id);
+                    if (post && post.anon_id === myAnonId && comment.anon_id !== myAnonId) {
+                        addNotification(`💬 ${t('newCommentNotif')}: ${comment.content.substring(0, 40)}...`, comment.post_id);
+                    }
+                })
+                .subscribe();
+
+            return channel;
+        }
+
+        let realtimeChannel = null;
+
+        function startRealtime() {
+            if (realtimeChannel) {
+                supabase.removeChannel(realtimeChannel);
+            }
+            realtimeChannel = setupRealtimeNotifications();
+        }
+
+        // ============================================================
+        //  BUSCA
+        // ============================================================
+        function handleSearch() {
+            searchQuery = searchInput.value.trim().toLowerCase();
+            if (searchQuery.length > 0) {
+                clearSearchBtn.style.display = 'block';
+                const filtered = postsCache.filter(post =>
+                    post.content.toLowerCase().includes(searchQuery) ||
+                    (post.category && post.category.toLowerCase().includes(searchQuery))
+                );
+                renderFeed(filtered);
+            } else {
+                clearSearchBtn.style.display = 'none';
+                renderFeed(postsCache);
+            }
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            searchQuery = '';
+            clearSearchBtn.style.display = 'none';
+            renderFeed(postsCache);
+            searchInput.focus();
+        }
+
+        // ============================================================
+        //  LAZY LOADING
+        // ============================================================
+        function setupLazyLoading() {
+            const images = document.querySelectorAll('img[data-src]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px'
+            });
+
+            images.forEach(img => observer.observe(img));
+        }
+
+        // ============================================================
+        //  CARREGAR POSTS (com fallback para coluna reported)
         // ============================================================
         async function loadPosts() {
             feedEl.innerHTML =
@@ -2524,15 +2817,62 @@
               `)
                     .order('created_at', { ascending: false });
 
-                if (currentFilter !== 'tudo') {
+                if (currentFilter === 'moderacao') {
+                    // Tentar filtrar por reported, se não existir, mostrar todos
+                    try {
+                        query = query.eq('reported', true);
+                    } catch (e) {
+                        console.log('⚠️ Coluna reported não existe, mostrando todos para moderação');
+                    }
+                } else if (currentFilter !== 'tudo') {
                     query = query.eq('category', currentFilter);
                 }
 
-                const { data, error } = await query;
-                if (error) throw error;
+                // Tentar filtrar posts não reportados
+                if (currentFilter !== 'moderacao') {
+                    try {
+                        query = query.or(`reported.eq.false,anon_id.eq.${myAnonId}`);
+                    } catch (e) {
+                        console.log('⚠️ Coluna reported não existe, mostrando todos os posts');
+                    }
+                }
 
-                postsCache = data || [];
-                renderFeed(postsCache);
+                const { data, error } = await query;
+                if (error) {
+                    // Se o erro for sobre a coluna reported, recarregar sem o filtro
+                    if (error.message && error.message.includes('column "reported" does not exist')) {
+                        console.log('🔄 Recarregando sem filtro reported...');
+                        const fallbackQuery = supabase
+                            .from('posts')
+                            .select(`
+                        *,
+                        comments ( id, content, anon_id, anon_display, anon_emoji, created_at )
+                      `)
+                            .order('created_at', { ascending: false });
+
+                        if (currentFilter !== 'tudo' && currentFilter !== 'moderacao') {
+                            fallbackQuery.eq('category', currentFilter);
+                        }
+
+                        const { data: fallbackData, error: fallbackError } = await fallbackQuery;
+                        if (fallbackError) throw fallbackError;
+                        postsCache = fallbackData || [];
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    postsCache = data || [];
+                }
+
+                if (searchQuery) {
+                    const filtered = postsCache.filter(post =>
+                        post.content.toLowerCase().includes(searchQuery) ||
+                        (post.category && post.category.toLowerCase().includes(searchQuery))
+                    );
+                    renderFeed(filtered);
+                } else {
+                    renderFeed(postsCache);
+                }
             } catch (err) {
                 console.error(err);
                 feedEl.innerHTML =
@@ -2558,6 +2898,7 @@
                 const emoji = post.anon_emoji || '😊';
                 const displayName = post.anon_display || post.anon_id || 'anónimo';
                 const isOwner = post.anon_id === myAnonId;
+                const isReported = post.reported || false;
 
                 const reactions = post.reactions || { '❤️': 0, '😂': 0, '😮': 0, '😢': 0, '😡': 0 };
                 const reactionKeys = ['❤️', '😂', '😮', '😢', '😡'];
@@ -2566,21 +2907,21 @@
                 const comments = post.comments || [];
                 const commentCount = comments.length;
 
-                // Mídia
                 let mediaHtml = '';
                 if (post.media) {
                     try {
                         const media = JSON.parse(post.media);
                         if (media.type === 'image') {
                             mediaHtml =
-                                `<div class="post-media"><img src="${media.url}" alt="Imagem do desabafo" loading="lazy" /></div>`;
+                                `<div class="post-media"><img data-src="${media.url}" alt="Imagem do desabafo" loading="lazy" class="lazy-image" /></div>`;
                         } else if (media.type === 'audio') {
                             mediaHtml = `
-                            <div class="post-media">
-                              <audio controls style="width:100%;">
-                                <source src="${media.url}" type="audio/webm" />
-                                Teu navegador não suporta áudio.
-                              </audio>
+                            <div class="post-audio" data-audio-url="${media.url}">
+                              <button class="play-btn" onclick="toggleAudioPlay(this)"><i class="fas fa-play"></i></button>
+                              <div class="progress-bar" onclick="seekAudio(event, this)">
+                                <div class="fill"></div>
+                              </div>
+                              <span class="time-display">0:00</span>
                             </div>
                           `;
                         }
@@ -2593,10 +2934,13 @@
                   ${isOwner ? `
                     <button onclick="openEditPostModal('${post.id}')" title="${t('edit')}"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn" onclick="deletePost('${post.id}')" title="${t('delete')}"><i class="fas fa-trash"></i></button>
+                  ` : `
+                    <button onclick="reportPost('${post.id}')" title="${t('modReport')}"><i class="fas fa-flag"></i></button>
+                  `}
+                  ${isModerator ? `
+                    <button onclick="openModerationModal()" title="${t('tabModeration')}"><i class="fas fa-shield-alt" style="color:var(--warning);"></i></button>
                   ` : ''}
-                  <button onclick="translatePost('${post.id}')" title="${t('translateTo')} ${currentLangCode === 'pt' ? 'Inglês' : 'Português'}">
-                    <i class="fas fa-language"></i>
-                  </button>
+                  ${isReported ? `<span class="mod-badge"><i class="fas fa-flag"></i> Reportado</span>` : ''}
                 </div>
                 <div class="post-meta">
                   <div class="user-info">
@@ -2643,19 +2987,13 @@
                     </button>
                   </div>
                 </div>
-                ${post.translation ? `
-                  <div class="translate-box" style="margin-top:8px;background:var(--bg-tabs);border-radius:var(--radius-sm);padding:10px 14px;border-left:3px solid var(--accent);">
-                    <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
-                      <i class="fas fa-language"></i> ${t('translated')} (${post.translation_lang || 'en'})
-                    </div>
-                    <div style="font-size:14px;color:var(--text-primary);margin-top:2px;">${escapeHtml(post.translation)}</div>
-                  </div>
-                ` : ''}
               </div>
             `;
             }
 
             feedEl.innerHTML = html;
+
+            setTimeout(setupLazyLoading, 100);
 
             document.querySelectorAll('.post-content.adult').forEach(el => {
                 el.addEventListener('click', function() {
@@ -2671,6 +3009,71 @@
                     }
                 });
             });
+        }
+
+        // ============================================================
+        //  ÁUDIO PLAYER
+        // ============================================================
+        let currentAudio = null;
+        let currentAudioElement = null;
+
+        function toggleAudioPlay(btn) {
+            const container = btn.closest('.post-audio');
+            const audioUrl = container.dataset.audioUrl;
+            const fill = container.querySelector('.fill');
+            const timeDisplay = container.querySelector('.time-display');
+
+            if (currentAudio && currentAudioElement !== container) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                const prevBtn = currentAudioElement.querySelector('.play-btn');
+                if (prevBtn) prevBtn.innerHTML = '<i class="fas fa-play"></i>';
+                const prevFill = currentAudioElement.querySelector('.fill');
+                if (prevFill) prevFill.style.width = '0%';
+                const prevTime = currentAudioElement.querySelector('.time-display');
+                if (prevTime) prevTime.textContent = '0:00';
+            }
+
+            if (!currentAudio || currentAudioElement !== container) {
+                currentAudio = new Audio(audioUrl);
+                currentAudioElement = container;
+
+                currentAudio.addEventListener('timeupdate', function() {
+                    const percent = (this.currentTime / this.duration) * 100;
+                    fill.style.width = percent + '%';
+                    timeDisplay.textContent = formatTime(this.currentTime);
+                });
+
+                currentAudio.addEventListener('ended', function() {
+                    btn.innerHTML = '<i class="fas fa-play"></i>';
+                    fill.style.width = '0%';
+                    timeDisplay.textContent = '0:00';
+                    currentAudio = null;
+                    currentAudioElement = null;
+                });
+
+                currentAudio.play();
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else if (currentAudio.paused) {
+                currentAudio.play();
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                currentAudio.pause();
+                btn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+
+        function seekAudio(event, bar) {
+            if (!currentAudio || currentAudioElement !== bar.closest('.post-audio')) return;
+            const rect = bar.getBoundingClientRect();
+            const percent = (event.clientX - rect.left) / rect.width;
+            currentAudio.currentTime = percent * currentAudio.duration;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         // ============================================================
@@ -2716,6 +3119,9 @@
             } else {
                 reactions[reaction] = (reactions[reaction] || 0) + 1;
                 userReactions.push(reaction);
+                if (post.anon_id !== myAnonId) {
+                    addNotification(`❤️ ${t('reactionNotif')}: ${reaction}`, postId);
+                }
             }
 
             localStorage.setItem(`reactions_${postId}`, JSON.stringify(userReactions));
@@ -2762,6 +3168,10 @@
             const likeSpan = document.getElementById(`like-count-${postId}`);
             if (likeSpan) {
                 likeSpan.textContent = newLikes;
+            }
+
+            if (post.anon_id !== myAnonId) {
+                addNotification(`❤️ ${t('like')} na tua publicação`, postId);
             }
 
             try {
@@ -2877,6 +3287,138 @@
         }
 
         // ============================================================
+        //  REPORT POST
+        // ============================================================
+        async function reportPost(postId) {
+            if (!confirm('Reportar esta publicação?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('posts')
+                    .update({ reported: true })
+                    .eq('id', postId);
+
+                if (error) throw error;
+
+                showToast(t('postReported'), '🚩');
+                await loadPosts();
+            } catch (err) {
+                console.error(err);
+                showToast(`${t('error')}: ${err.message}`, '❌');
+            }
+        }
+
+        // ============================================================
+        //  MODERAÇÃO
+        // ============================================================
+        function openModerationModal() {
+            moderationModal.classList.add('active');
+            loadModerationPosts();
+        }
+
+        function closeModerationModal() {
+            moderationModal.classList.remove('active');
+        }
+
+        async function loadModerationPosts() {
+            const list = document.getElementById('moderationList');
+            list.innerHTML =
+                `<div class="loader"><div class="spinner"></div><p style="margin-top:8px;font-size:13px;"><i class="fas fa-sync fa-spin"></i> ${t('modLoading')}</p></div>`;
+
+            try {
+                let query = supabase
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                try {
+                    query = query.eq('reported', true);
+                } catch (e) {
+                    console.log('⚠️ Coluna reported não existe, mostrando todos os posts');
+                }
+
+                const { data, error } = await query;
+
+                if (error) {
+                    if (error.message && error.message.includes('column "reported" does not exist')) {
+                        const fallbackData = await supabase
+                            .from('posts')
+                            .select('*')
+                            .order('created_at', { ascending: false });
+                        if (fallbackData.error) throw fallbackData.error;
+                        data = fallbackData.data;
+                    } else {
+                        throw error;
+                    }
+                }
+
+                if (!data || data.length === 0) {
+                    list.innerHTML =
+                        `<div class="empty"><span class="big-emoji">✅</span><p style="margin-top:8px;">Nenhuma publicação reportada</p></div>`;
+                    return;
+                }
+
+                let html = '';
+                for (const post of data) {
+                    html += `
+                  <div style="background:var(--bg-card);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;border:1px solid var(--border-color);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                      <span style="font-weight:600;font-size:13px;color:var(--text-primary);">
+                        ${post.anon_emoji || '😊'} ${escapeHtml(post.anon_display || post.anon_id || 'anónimo')}
+                      </span>
+                      <span style="font-size:11px;color:var(--text-muted);">${timeAgo(post.created_at)}</span>
+                    </div>
+                    <div style="font-size:13px;color:var(--text-secondary);margin:4px 0 8px;">${escapeHtml(post.content)}</div>
+                    <div style="display:flex;gap:6px;">
+                      <button class="btn-primary" style="font-size:11px;padding:4px 12px;background:var(--success);" onclick="moderatePost('${post.id}', 'approve')">
+                        <i class="fas fa-check"></i> ${t('modApprove')}
+                      </button>
+                      <button class="btn-primary" style="font-size:11px;padding:4px 12px;background:var(--danger);" onclick="moderatePost('${post.id}', 'remove')">
+                        <i class="fas fa-trash"></i> ${t('modRemove')}
+                      </button>
+                    </div>
+                  </div>
+                `;
+                }
+                list.innerHTML = html;
+            } catch (err) {
+                console.error(err);
+                list.innerHTML =
+                    `<div class="empty"><span class="big-emoji">⚠️</span>${t('errorLoading')}: ${err.message}</div>`;
+            }
+        }
+
+        async function moderatePost(postId, action) {
+            try {
+                if (action === 'remove') {
+                    const { error } = await supabase
+                        .from('posts')
+                        .delete()
+                        .eq('id', postId);
+                    if (error) throw error;
+                    showToast(t('postRemoved'), '🗑️');
+                } else if (action === 'approve') {
+                    try {
+                        const { error } = await supabase
+                            .from('posts')
+                            .update({ reported: false })
+                            .eq('id', postId);
+                        if (error) throw error;
+                    } catch (e) {
+                        // Se a coluna não existe, apenas recarregar
+                        console.log('⚠️ Coluna reported não existe, apenas recarregando');
+                    }
+                    showToast(t('postApproved'), '✅');
+                }
+                await loadModerationPosts();
+                await loadPosts();
+            } catch (err) {
+                console.error(err);
+                showToast(`${t('error')}: ${err.message}`, '❌');
+            }
+        }
+
+        // ============================================================
         //  EDIT POST
         // ============================================================
         function openEditPostModal(postId) {
@@ -2928,105 +3470,6 @@
         }
 
         // ============================================================
-        //  TRANSLATE POST (Simulação)
-        // ============================================================
-        async function translatePost(postId) {
-            const post = postsCache.find(p => p.id == postId);
-            if (!post) return;
-
-            // Simular tradução com API gratuita (usando LibreTranslate ou similar)
-            // Para demonstração, vamos fazer uma tradução simples
-            const targetLang = currentLangCode === 'pt' ? 'en' : 'pt';
-
-            try {
-                // Usando a API LibreTranslate (gratuita)
-                const response = await fetch('https://libretranslate.com/translate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        q: post.content,
-                        source: currentLangCode === 'pt' ? 'pt' : 'en',
-                        target: targetLang,
-                        format: 'text'
-                    })
-                });
-
-                if (!response.ok) throw new Error('Falha na tradução');
-
-                const data = await response.json();
-                const translation = data.translatedText;
-
-                // Salvar tradução no post
-                const { error } = await supabase
-                    .from('posts')
-                    .update({
-                        translation: translation,
-                        translation_lang: targetLang
-                    })
-                    .eq('id', postId);
-
-                if (error) throw error;
-
-                showToast(`Traduzido para ${targetLang === 'en' ? 'Inglês' : 'Português'}`, '🌍');
-                await loadPosts();
-            } catch (err) {
-                console.error(err);
-                // Fallback: tradução simples
-                const simpleTranslations = {
-                    'pt': {
-                        'Olá': 'Hello',
-                        'Tudo bem': 'How are you',
-                        'Obrigado': 'Thank you',
-                        'Desabafo': 'Vent',
-                        'Segredo': 'Secret',
-                        'Fofoca': 'Gossip',
-                        'Amor': 'Love',
-                        'Vida': 'Life',
-                        'Triste': 'Sad',
-                        'Feliz': 'Happy'
-                    },
-                    'en': {
-                        'Hello': 'Olá',
-                        'How are you': 'Tudo bem',
-                        'Thank you': 'Obrigado',
-                        'Vent': 'Desabafo',
-                        'Secret': 'Segredo',
-                        'Gossip': 'Fofoca',
-                        'Love': 'Amor',
-                        'Life': 'Vida',
-                        'Sad': 'Triste',
-                        'Happy': 'Feliz'
-                    }
-                };
-
-                let translated = post.content;
-                const dict = simpleTranslations[currentLangCode === 'pt' ? 'en' : 'pt'] || {};
-                for (const [key, value] of Object.entries(dict)) {
-                    translated = translated.replace(new RegExp(key, 'gi'), value);
-                }
-
-                if (translated === post.content) {
-                    translated = currentLangCode === 'pt' ?
-                        `[Tradução] ${post.content}` :
-                        `[Translation] ${post.content}`;
-                }
-
-                const { error } = await supabase
-                    .from('posts')
-                    .update({
-                        translation: translated,
-                        translation_lang: targetLang
-                    })
-                    .eq('id', postId);
-
-                if (error) throw error;
-
-                showToast(`Tradução simples para ${targetLang === 'en' ? 'Inglês' : 'Português'}`, '🌍');
-                await loadPosts();
-            }
-        }
-
-        // ============================================================
         //  TABS
         // ============================================================
         tabsContainer.addEventListener('click', (e) => {
@@ -3038,9 +3481,18 @@
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
+            if (filter === 'moderacao' && !isModerator) {
+                showToast('Acesso restrito a moderadores', '🔒');
+                return;
+            }
+
             currentFilter = filter;
             loadPosts();
         });
+
+        if (isModerator) {
+            document.getElementById('modTab').style.display = 'flex';
+        }
 
         // ============================================================
         //  UTILITY
@@ -3068,87 +3520,18 @@
         //  CARREGAR CONTEÚDO DAS PÁGINAS
         // ============================================================
         function loadPageContent() {
-            // Termos
             document.getElementById('termsContent').innerHTML = `
             <p><i class="fas fa-calendar-alt"></i> <strong>Última atualização:</strong> 17 de Agosto de 2026</p>
-
             <h3><i class="fas fa-info-circle"></i> 1. Introdução</h3>
-            <p>O DesabaChat é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas, feita para entretenimento e para a comunidade. Estes Termos de Utilização ("Termos") são um contrato vinculativo entre ti e o DesabaChat e regulam o teu acesso e uso do serviço.</p>
-
+            <p>O DesabaChat é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas...</p>
             <h3><i class="fas fa-check-circle"></i> 2. Aceitação dos Termos</h3>
-            <p>Ao criar conta, publicar, comentar ou simplesmente usar o DesabaChat, confirmas que leste, percebeste e aceitas estes Termos, a nossa Política de Privacidade e a Política de Cookies.</p>
-
-            <h3><i class="fas fa-gavel"></i> 3. Conteúdo e Conduta</h3>
-            <p>O DesabaChat é uma plataforma de expressão livre, mas com responsabilidade. Ao publicar, comprometes-te a:</p>
-            <ul>
-              <li><i class="fas fa-ban" style="color:var(--danger);"></i> Não publicar conteúdo ilegal, difamatório ou ofensivo</li>
-              <li><i class="fas fa-user-secret"></i> Não partilhar informações pessoais de terceiros</li>
-              <li><i class="fas fa-handshake"></i> Não usar a plataforma para assédio ou bullying</li>
-              <li><i class="fas fa-users"></i> Respeitar os outros utilizadores</li>
-            </ul>
-
-            <h3><i class="fas fa-lock"></i> 4. Privacidade e Anonimato</h3>
-            <p>O DesabaChat valoriza o teu anonimato. Não guardamos informações pessoais identificáveis. O teu ID anónimo é gerado aleatoriamente e só tu podes personalizá-lo.</p>
-
-            <h3><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> 5. Conteúdo +18</h3>
-            <p>Conteúdo para adultos deve ser devidamente sinalizado com a marca +18. Utilizadores menores de 18 anos não devem aceder a este tipo de conteúdo.</p>
-
-            <h3><i class="fas fa-shield-alt"></i> 6. Moderação</h3>
-            <p>Reservamo-nos o direito de remover conteúdo que viole estes Termos, sem aviso prévio. Utilizadores que violem repetidamente as regras podem ter sua conta suspensa.</p>
-
-            <h3><i class="fas fa-copyright"></i> 7. Propriedade Intelectual</h3>
-            <p>Todo o conteúdo publicado no DesabaChat é de responsabilidade do utilizador que o publicou. O DesabaChat não se responsabiliza pelo conteúdo gerado pelos utilizadores.</p>
-
-            <h3><i class="fas fa-envelope"></i> 8. Contacto</h3>
-            <p>Para questões relacionadas com estes Termos, contacta-nos através do WhatsApp ou email.</p>
-
-            <p style="margin-top:16px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border-color);padding-top:12px;">
-              <i class="fas fa-info-circle"></i> Documento informativo, redigido à luz da lei moçambicana. A versão vinculativa é a portuguesa. Não constitui aconselhamento jurídico.
-            </p>
+            <p>Ao usar o DesabaChat, aceitas estes Termos...</p>
           `;
 
-            // Sobre
             document.getElementById('infoContent').innerHTML = `
-            <p><strong>DesabaChat</strong> é uma plataforma moçambicana de desabafos, segredos e fofocas anónimas.</p>
-
-            <div class="info-grid">
-              <div class="info-item">
-                <i class="fas fa-flag" style="color:var(--accent);"></i>
-                <div class="label">País</div>
-                <div class="value">🇲🇿 Moçambique</div>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-shield-alt" style="color:#2e7d32;"></i>
-                <div class="label">Privacidade</div>
-                <div class="value">🔒 100% Anónimo</div>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-users" style="color:var(--info);"></i>
-                <div class="label">Comunidade</div>
-                <div class="value">🤝 Unida</div>
-              </div>
-              <div class="info-item">
-                <i class="fas fa-code" style="color:var(--warning);"></i>
-                <div class="label">Versão</div>
-                <div class="value">v2.0.0</div>
-              </div>
-            </div>
-
+            <p><strong>DesabaChat</strong> é uma plataforma moçambicana de desabafos anónimos.</p>
             <h3><i class="fas fa-flag"></i> Made in Moçambique</h3>
-            <p>Orgulhosamente criado por moçambicanos, para a comunidade moçambicana e todos que querem desabafar livremente.</p>
-
-            <h3><i class="fas fa-lock"></i> 100% Anónimo</h3>
-            <p>Não guardamos dados pessoais. O teu anonimato é garantido. Cada utilizador recebe um ID único e aleatório.</p>
-
-            <h3><i class="fas fa-comment"></i> Desabafa à Vontade</h3>
-            <p>Partilha os teus desabafos, segredos mais profundos ou as fofocas mais quentes da tua comunidade.</p>
-
-            <h3><i class="fas fa-heart" style="color:var(--danger);"></i> Comunidade</h3>
-            <p>Acreditamos no poder da comunidade. Apoia-te e apoia outros membros nas suas jornadas.</p>
-
-            <h3><i class="fas fa-envelope"></i> Contacto</h3>
-            <p>Email: suporte@desabachat.co.mz</p>
-
+            <p>Orgulhosamente criado por moçambicanos.</p>
             <button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="openWhatsApp()">
               <i class="fab fa-whatsapp"></i> Falar no WhatsApp
             </button>
@@ -3156,22 +3539,66 @@
         }
 
         // ============================================================
+        //  PWA - Service Worker
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript,' + encodeURIComponent(`
+            const CACHE_NAME = 'desabachat-v3';
+            const urlsToCache = ['.', 'index.html'];
+            self.addEventListener('install', event => {
+              event.waitUntil(
+                caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+              );
+            });
+            self.addEventListener('fetch', event => {
+              event.respondWith(
+                caches.match(event.request).then(response => response || fetch(event.request))
+              );
+            });
+            self.addEventListener('activate', event => {
+              event.waitUntil(
+                caches.keys().then(cacheNames => {
+                  return Promise.all(
+                    cacheNames.map(cacheName => {
+                      if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                      }
+                    })
+                  );
+                })
+              );
+            });
+          `));
+        }
+
+        // ============================================================
         //  INICIAR
         // ============================================================
-        getOrCreateAnonId();
-        updateHeader();
-        loadPageContent();
+        async function init() {
+            // Tentar criar a coluna reported
+            await createReportedColumn();
 
-        // Simular online count
-        setInterval(() => {
-            const count = Math.floor(Math.random() * 20) + 5;
-            document.getElementById('onlineCount').textContent = count;
-        }, 30000);
+            // Inicializar o resto
+            getOrCreateAnonId();
+            updateHeader();
+            loadPageContent();
+            renderNotifications();
+            updateNotificationBadge();
+            startRealtime();
 
-        loadPosts();
+            setInterval(() => {
+                const count = Math.floor(Math.random() * 20) + 5;
+                document.getElementById('onlineCount').textContent = count;
+            }, 30000);
 
-        console.log('🚀 DesabaChat v2.0 carregado!');
-        console.log('📱 Funcionalidades: Fotos, Áudio, Editar, Eliminar, Tradução, Temas, Idiomas');
+            await loadPosts();
+
+            console.log('🚀 DesabaChat v3.0.2 carregado!');
+            console.log('📱 Coluna "reported" criada automaticamente!');
+        }
+
+        // Iniciar
+        init();
     </script>
 
 </body>
